@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VoltShare | Driver Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#e0e3e5",
+                        "secondary": "#555f6f",
+                        "tertiary-container": "#fc7c78",
+                        "surface": "#f7f9fb",
+                        "inverse-primary": "#4edea3",
+                        "on-primary-container": "#00422b",
+                        "on-primary-fixed-variant": "#005236",
+                        "on-background": "#191c1e",
+                        "inverse-surface": "#2d3133",
+                        "on-tertiary-fixed": "#410005",
+                        "secondary-fixed": "#d9e3f6",
+                        "surface-variant": "#e0e3e5",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb3af",
+                        "tertiary": "#a43a3a",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-container": "#596373",
+                        "primary-container": "#10b981",
+                        "surface-container-high": "#e6e8ea",
+                        "primary-fixed": "#6ffbbe",
+                        "primary": "#006c49",
+                        "on-primary": "#ffffff",
+                        "surface-tint": "#006c49",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#eff1f3",
+                        "secondary-fixed-dim": "#bdc7d9",
+                        "on-tertiary-container": "#711419",
+                        "on-secondary-fixed": "#121c2a",
+                        "secondary-container": "#d6e0f3",
+                        "on-secondary-fixed-variant": "#3d4756",
+                        "surface-container": "#eceef0",
+                        "surface-container-low": "#f2f4f6",
+                        "outline-variant": "#bbcabf",
+                        "primary-fixed-dim": "#4edea3",
+                        "on-surface": "#191c1e",
+                        "tertiary-fixed": "#ffdad7",
+                        "on-surface-variant": "#3c4a42",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#842225",
+                        "background": "#f7f9fb",
+                        "on-primary-fixed": "#002113",
+                        "outline": "#6c7a71",
+                        "surface-dim": "#d8dadc",
+                        "surface-bright": "#f7f9fb",
+                        "on-error": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "16px",
+                        "base": "4px",
+                        "margin-desktop": "48px",
+                        "xs": "8px",
+                        "margin-mobile": "20px",
+                        "md": "24px",
+                        "xl": "64px",
+                        "gutter": "16px",
+                        "lg": "40px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "label-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .custom-map-shadow { box-shadow: 0 4px 20px rgba(31, 41, 55, 0.08); }
+        .mode-toggle-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="bg-surface-container-lowest sticky top-0 z-50 w-full flex justify-between items-center px-margin-desktop py-4 shadow-[0_4px_20px_rgba(31,41,55,0.08)]">
+<div class="flex items-center gap-sm">
+<img alt="VoltShare Logo" class="w-8 h-8 object-contain" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAD0ElEQVR4AexYPWgUQRR+7/wDNcwVNpbiH1qlErSLgaxRETQaOyNoHxAEfwg3ZyBBBBFrUWMXTUQCMXfBmEYM2KhNjESxtLG4TYwYNfd8exyX2b3b35tZEbLs3M28mXnzfTO7M9++DPzn1xqBf72AaysQtgJiUnaIgpwXxfysKOS7wtrHrTe6AtlJ2QplHEPEXQiwD4FuxAUY1t4YgZZpuY3BP0eETTUQiPtreU2ZjCY/dW4yyzgGCNvrKjQbjBDIFvMPeeYPasba0J12AtlCvpdH6uGUyq2VgCjKwwR0OxXk1UG0ERBT/Tt5pxlFRNWnXR3H2J86WPJBire2wO/yOABmoXoRwQqvxqlq0difFgICfjxBhL0qSkK6ZFvypWozkW+aAD/3gwjQ6QE3tGDJux6bkWJTBERBdiPgFRUZEb0pbaSLqs1kPjGBikwAfOQCR/C1vAmOQZv847IbLCQi0Egm8Eu7DBk6utgmvxnEW+c6EYHGMoHOlTrku7oRPAY+pSlekm9bivKQx02tGJtAtiAf8I7jkglENGAfkY9rXrVmsHUdwTD4XLEIZB2ZgHhe9UUAEwz+umpz5YlmXeUEBUL47tctMgExmW8HhDugXAz+g72RuhVTXZYHz/EKfaqriGFAgKt+zSMREMX+HUgw6nHCMiHj7Di+s+O058NshFdod8nKYVji9kOcXDdP0mDJks9cRqUQTsCRCVSe4D6CU+XmHaciE2yr70vFoOGn8ngCuFQsg5+wrdy1IPehBNKQCXya16lYnqSPNmw+EwTeqQskwI6Ny4TK4wn4FBFVLDZgphOsy0sOyKCkdnK1Y/Cn0SMTqg16ouzjopCf4xQchXh1swXAUbFQezydMfjF74r6ePoSYEf9nBLfyOo0LAohln4OI0cr1EHKQL12R25KtQXlfQnwrrM1qGOkuoAohCjmBxh8p+qHgO7HVbG+BFYQzrLz95y036KiYt17O7+0M7zlXog7mC+BRUu+Llm5Vk6h+7faJgyAv4qlE2F9G9X7EmjUuFmbCRWbHoFpuT6zDOOA4Al2RVOxfpOXGoHsL7yHiAdUIHzSDrLMaErFpkIgqUxQyfrljRMQDYJdvONEkgl+oFW7cQK817uDXUQLsIFVbASZoAL1yxsnAN5gF8JJu73vM2i6UiCwitREsCtNAkaCXakQ4Jd2hk9r17f06ro0lzNPoBLsSiYTolDTT8CJQlRH5pk3HuzSToA/RnIsi+f4lJ0HoONRgl1Vvon+tBNgSTzCaR9/jO9hmfAiEaoYnbQTiDG2lqZrBLRMYxNO/gIAAP//fdEUHgAAAAZJREFUAwC7o5Vw+xxOrwAAAABJRU5ErkJggg=="/>
+<h1 class="font-headline-md text-headline-md font-extrabold text-primary tracking-tight">VoltShare</h1>
+</div>
+<nav class="hidden md:flex items-center gap-lg">
+<div class="flex items-center gap-xs font-body-md text-body-md">
+<a class="text-primary border-b-2 border-primary pb-1" href="#">Explore</a>
+<a class="text-secondary hover:text-primary transition-colors duration-200" href="#">Activity</a>
+<a class="text-secondary hover:text-primary transition-colors duration-200" href="#">Messages</a>
+</div>
+</nav>
+<div class="flex items-center gap-sm">
+<!-- Mode Toggle -->
+<div class="flex items-center bg-surface-container p-1 rounded-full border border-outline-variant">
+<button class="px-4 py-1.5 rounded-full text-label-md font-label-md bg-primary text-on-primary shadow-sm mode-toggle-transition" id="driverMode">Driver Mode</button>
+<button class="px-4 py-1.5 rounded-full text-label-md font-label-md text-secondary hover:text-primary mode-toggle-transition" id="hostMode">Host Mode</button>
+</div>
+<div class="flex items-center gap-xs ml-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors duration-200 active:scale-95">
+<span class="material-symbols-outlined text-secondary">notifications</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors duration-200 active:scale-95">
+<span class="material-symbols-outlined text-secondary">help</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant cursor-pointer ml-2">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a friendly individual with a warm smile, set against a clean, softly lit studio background. The style is modern, high-quality digital photography, maintaining the clean, minimalist aesthetic of the eco-utility brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHpymbl93XrnwrF1YLjQMhdD1YcNDUm15VF4MhWkJugY5lK6yJ1RVxWaGio5796PINtHtjTas9kcWaZvRKrRmui2VBf-sp-8uLiNoYAObhT2f-7LhsuEg14vlN_LURz_04r5k-S9hwwjwxhTs0EwzDqy_RnMFAIb1I85wQh1CkstgH2ahED5o-TKhddbsz4HJWiQdn5HER3y4D3jMBZ8yboYWmK0i6CSVcpTytR_CNg05HmtvD-iYJPGkUsvyFzdN7-mv1VnLws-o"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 flex overflow-hidden h-[calc(100vh-72px)]">
+<!-- Sidebar: Discovery & Search (35%) -->
+<aside class="w-[35%] bg-surface border-r border-outline-variant flex flex-col p-sm gap-sm overflow-y-auto scrollbar-hide">
+<!-- Search & Filter Container -->
+<div class="space-y-sm">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full pl-12 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-xl focus:ring-2 focus:ring-primary-container focus:border-primary outline-none transition-all font-body-md text-body-md" placeholder="Enter location or zip code" type="text"/>
+</div>
+<div class="flex flex-wrap gap-xs">
+<button class="px-4 py-1.5 rounded-full border border-primary bg-primary-container/10 text-primary text-label-md font-label-md hover:bg-primary-container/20 transition-all">Level 2</button>
+<button class="px-4 py-1.5 rounded-full border border-outline-variant bg-surface-container-lowest text-secondary text-label-md font-label-md hover:border-primary hover:text-primary transition-all">Level 3</button>
+<button class="px-4 py-1.5 rounded-full border border-outline-variant bg-surface-container-lowest text-secondary text-label-md font-label-md hover:border-primary hover:text-primary transition-all">Tesla</button>
+<button class="px-4 py-1.5 rounded-full border border-outline-variant bg-surface-container-lowest text-secondary text-label-md font-label-md hover:border-primary hover:text-primary transition-all">J1772</button>
+</div>
+</div>
+<div class="mt-4">
+<h2 class="text-label-sm font-label-sm uppercase tracking-wider text-secondary mb-4 px-1">Found 12 chargers nearby</h2>
+<!-- Charger Cards List -->
+<div class="space-y-sm">
+<!-- Card 1 (Active/Selected) -->
+<div class="bg-surface-container-lowest p-sm rounded-xl custom-map-shadow border border-primary-container ring-1 ring-primary-container/20 group cursor-pointer transition-all hover:translate-y-[-2px]">
+<div class="flex justify-between items-start mb-base">
+<div>
+<h3 class="font-headline-md text-[18px] text-on-background group-hover:text-primary transition-colors">Sunset Drive Home Charger</h3>
+<p class="text-label-md text-secondary mt-1">1422 Sunset Blvd, Los Angeles</p>
+</div>
+<span class="bg-primary/10 text-primary px-2 py-0.5 rounded text-label-sm font-bold">Level 2</span>
+</div>
+<div class="flex items-center gap-sm mt-3 pb-sm border-b border-surface-container">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary scale-90">distance</span>
+<span class="text-label-md font-semibold">0.8 miles</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary scale-90">payments</span>
+<span class="text-label-md font-semibold">$0.35/kWh</span>
+</div>
+</div>
+<div class="flex items-center justify-between mt-sm">
+<div class="flex items-center gap-base text-primary">
+<span class="material-symbols-outlined scale-75" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-md font-bold">4.9</span>
+<span class="text-label-sm text-secondary font-normal">(124)</span>
+</div>
+<button class="bg-[#10B981] hover:bg-[#0da271] text-white px-5 py-2 rounded-lg text-label-md font-bold transition-all active:scale-95 shadow-sm">Instant Book</button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest p-sm rounded-xl custom-map-shadow border border-transparent hover:border-outline-variant cursor-pointer transition-all hover:translate-y-[-2px]">
+<div class="flex justify-between items-start mb-base">
+<div>
+<h3 class="font-headline-md text-[18px] text-on-background">Modern Eco Station</h3>
+<p class="text-label-md text-secondary mt-1">882 Broadway, Los Angeles</p>
+</div>
+<span class="bg-primary/10 text-primary px-2 py-0.5 rounded text-label-sm font-bold">Level 3</span>
+</div>
+<div class="flex items-center gap-sm mt-3 pb-sm border-b border-surface-container">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary scale-90">distance</span>
+<span class="text-label-md font-semibold">1.4 miles</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary scale-90">payments</span>
+<span class="text-label-md font-semibold">$0.42/kWh</span>
+</div>
+</div>
+<div class="flex items-center justify-between mt-sm">
+<div class="flex items-center gap-base text-primary">
+<span class="material-symbols-outlined scale-75" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-md font-bold">4.7</span>
+<span class="text-label-sm text-secondary font-normal">(89)</span>
+</div>
+<button class="bg-surface-container-high text-on-background px-5 py-2 rounded-lg text-label-md font-bold hover:bg-surface-container-highest transition-all active:scale-95">View Details</button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest p-sm rounded-xl custom-map-shadow border border-transparent hover:border-outline-variant cursor-pointer transition-all hover:translate-y-[-2px]">
+<div class="flex justify-between items-start mb-base">
+<div>
+<h3 class="font-headline-md text-[18px] text-on-background">Tesla Power Wall Peak</h3>
+<p class="text-label-md text-secondary mt-1">45 Canyon Dr, Los Angeles</p>
+</div>
+<span class="bg-primary/10 text-primary px-2 py-0.5 rounded text-label-sm font-bold">Tesla</span>
+</div>
+<div class="flex items-center gap-sm mt-3 pb-sm border-b border-surface-container">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary scale-90">distance</span>
+<span class="text-label-md font-semibold">2.1 miles</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary scale-90">payments</span>
+<span class="text-label-md font-semibold">$0.28/kWh</span>
+</div>
+</div>
+<div class="flex items-center justify-between mt-sm">
+<div class="flex items-center gap-base text-primary">
+<span class="material-symbols-outlined scale-75" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-md font-bold">5.0</span>
+<span class="text-label-sm text-secondary font-normal">(42)</span>
+</div>
+<button class="bg-[#10B981] hover:bg-[#0da271] text-white px-5 py-2 rounded-lg text-label-md font-bold transition-all active:scale-95 shadow-sm">Instant Book</button>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Canvas: Interactive Map (65%) -->
+<section class="flex-1 relative bg-surface-container">
+<!-- Simulated Map Component -->
+<div class="absolute inset-0 w-full h-full bg-cover bg-center" data-alt="A clean, highly detailed minimalist street map of a sun-drenched coastal city in light mode. The map features elegant, thin gray lines for roads and soft off-white for land masses. Scattered across the map are vibrant emerald green custom pins representing charging stations. The overall aesthetic is high-tech, architectural, and serene, matching the premium eco-utility brand identity." data-location="Los Angeles" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBduIjeAe-i1D-QRdziVPNtNvc1C9KnbkkhbgsTFTwJLtLSfbxqYJrgy1B52xCWJmbmDY7ZTJNlr20vNNDGxTWUPdGoZWxlVe4BFB7-0UE9OB-vYKCOStNO32_wan-_x18Fid670SvlpRietO4-nHfzBhoO0UZQaEBktM8w9TR36XbK0jGhb4Bv-HkCPprxirPsb-Pu3iaNT9t8N09Ng1uaxtattnXNvg2USb3epD_zAAJrNV7VHuN1IsfCYWV25JxUQe4D5BGb8eU')">
+<!-- Map Overlay: Search Area Pin -->
+<div class="absolute top-1/2 left-[45%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+<div class="w-10 h-10 bg-primary text-on-primary rounded-full flex items-center justify-center shadow-lg animate-bounce border-2 border-on-primary">
+<span class="material-symbols-outlined">electric_car</span>
+</div>
+<div class="mt-2 bg-surface-container-lowest px-4 py-2 rounded-xl custom-map-shadow border border-primary-container flex flex-col items-center">
+<p class="text-label-sm font-bold text-primary">Your Location</p>
+</div>
+</div>
+<!-- Custom Map Pins (Simulated) -->
+<div class="absolute top-[20%] left-[30%] cursor-pointer hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-[40px] drop-shadow-md" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+<div class="absolute top-[60%] left-[25%] cursor-pointer hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-[40px] drop-shadow-md" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+<div class="absolute top-[40%] left-[70%] cursor-pointer hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-[40px] drop-shadow-md" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+<div class="absolute top-[75%] left-[60%] cursor-pointer hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-[40px] drop-shadow-md" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+<!-- Active Selection Card Overlay -->
+<div class="absolute top-[35%] left-[70%] -translate-x-1/2 mt-8 z-10 w-64 bg-surface-container-lowest p-4 rounded-xl custom-map-shadow border border-primary animate-in fade-in slide-in-from-top-4 duration-500">
+<div class="flex items-center justify-between mb-2">
+<h4 class="text-label-md font-bold text-on-background">Sunset Drive Home</h4>
+<span class="text-primary text-label-sm font-bold">$0.35/kWh</span>
+</div>
+<div class="flex items-center gap-xs text-secondary mb-3">
+<span class="material-symbols-outlined scale-75">schedule</span>
+<p class="text-label-sm">Estimated Arrival: <span class="text-on-background font-bold">12 min</span></p>
+</div>
+<div class="flex gap-xs">
+<button class="flex-1 bg-primary text-on-primary py-2 rounded-lg text-label-sm font-bold hover:brightness-110 transition-all">Start Navigation</button>
+</div>
+<!-- Tooltip Point -->
+<div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-surface-container-lowest border-t border-l border-primary rotate-45"></div>
+</div>
+</div>
+<!-- Map Controls -->
+<div class="absolute bottom-sm right-sm flex flex-col gap-xs">
+<button class="w-12 h-12 bg-surface-container-lowest rounded-xl custom-map-shadow flex items-center justify-center text-secondary hover:text-primary transition-all active:scale-95 border border-outline-variant">
+<span class="material-symbols-outlined">add</span>
+</button>
+<button class="w-12 h-12 bg-surface-container-lowest rounded-xl custom-map-shadow flex items-center justify-center text-secondary hover:text-primary transition-all active:scale-95 border border-outline-variant">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<button class="w-12 h-12 bg-primary text-on-primary rounded-xl custom-map-shadow flex items-center justify-center transition-all active:scale-95 border border-primary">
+<span class="material-symbols-outlined">my_location</span>
+</button>
+</div>
+<!-- Weather/Status Widget -->
+<div class="absolute top-sm right-sm">
+<div class="bg-surface-container-lowest/80 backdrop-blur-md px-4 py-2 rounded-full border border-outline-variant custom-map-shadow flex items-center gap-sm">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-tertiary scale-75">wb_sunny</span>
+<span class="text-label-md font-semibold">72°F</span>
+</div>
+<div class="w-px h-4 bg-outline-variant"></div>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary scale-75">ev_station</span>
+<span class="text-label-md font-semibold text-primary">Chargers Ready</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Micro-interaction Scripts -->
+<script>
+        const driverBtn = document.getElementById('driverMode');
+        const hostBtn = document.getElementById('hostMode');
+
+        hostBtn.addEventListener('click', () => {
+            hostBtn.classList.add('bg-primary', 'text-on-primary', 'shadow-sm');
+            hostBtn.classList.remove('text-secondary');
+            driverBtn.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm');
+            driverBtn.classList.add('text-secondary');
+        });
+
+        driverBtn.addEventListener('click', () => {
+            driverBtn.classList.add('bg-primary', 'text-on-primary', 'shadow-sm');
+            driverBtn.classList.remove('text-secondary');
+            hostBtn.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm');
+            hostBtn.classList.add('text-secondary');
+        });
+
+        // Search input hover effect
+        const searchInput = document.querySelector('input');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('scale-[1.01]');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('scale-[1.01]');
+        });
+    </script>
+</body></html>

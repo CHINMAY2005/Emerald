@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Emerald | Host Dashboard</title>
+<!-- Google Fonts & Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "surface-container-low": "#f2f4f6",
+                "error-container": "#ffdad6",
+                "surface-container": "#eceef0",
+                "background": "#f7f9fb",
+                "on-tertiary-fixed-variant": "#842225",
+                "on-background": "#191c1e",
+                "surface": "#f7f9fb",
+                "on-surface": "#191c1e",
+                "on-primary": "#ffffff",
+                "on-primary-fixed": "#002113",
+                "surface-dim": "#d8dadc",
+                "surface-container-highest": "#e0e3e5",
+                "outline": "#6c7a71",
+                "tertiary-fixed": "#ffdad7",
+                "surface-variant": "#e0e3e5",
+                "primary-container": "#10b981",
+                "on-secondary-fixed-variant": "#3d4756",
+                "on-surface-variant": "#3c4a42",
+                "on-primary-container": "#00422b",
+                "primary": "#006c49",
+                "surface-container-lowest": "#ffffff",
+                "error": "#ba1a1a",
+                "surface-tint": "#006c49",
+                "secondary": "#555f6f",
+                "on-tertiary": "#ffffff",
+                "primary-fixed": "#6ffbbe",
+                "inverse-on-surface": "#eff1f3",
+                "tertiary-container": "#fc7c78",
+                "on-secondary-container": "#596373",
+                "on-tertiary-fixed": "#410005",
+                "surface-bright": "#f7f9fb",
+                "on-error-container": "#93000a",
+                "inverse-primary": "#4edea3",
+                "tertiary": "#a43a3a",
+                "on-error": "#ffffff",
+                "secondary-container": "#d6e0f3",
+                "outline-variant": "#bbcabf",
+                "on-secondary": "#ffffff",
+                "on-secondary-fixed": "#121c2a",
+                "secondary-fixed": "#d9e3f6",
+                "on-tertiary-container": "#711419",
+                "primary-fixed-dim": "#4edea3",
+                "on-primary-fixed-variant": "#005236",
+                "tertiary-fixed-dim": "#ffb3af",
+                "inverse-surface": "#2d3133",
+                "surface-container-high": "#e6e8ea",
+                "secondary-fixed-dim": "#bdc7d9"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "margin-desktop": "48px",
+                "lg": "40px",
+                "base": "4px",
+                "xl": "64px",
+                "margin-mobile": "20px",
+                "xs": "8px",
+                "sm": "16px",
+                "md": "24px",
+                "gutter": "16px"
+        },
+        "fontFamily": {
+                "body-md": [
+                        "Inter"
+                ],
+                "body-lg": [
+                        "Inter"
+                ],
+                "headline-md": [
+                        "Inter"
+                ],
+                "headline-lg-mobile": [
+                        "Inter"
+                ],
+                "label-sm": [
+                        "Inter"
+                ],
+                "display-lg": [
+                        "Inter"
+                ],
+                "headline-lg": [
+                        "Inter"
+                ],
+                "label-md": [
+                        "Inter"
+                ]
+        },
+        "fontSize": {
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-md": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "28px",
+                        {
+                                "lineHeight": "36px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "label-sm": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "display-lg": [
+                        "48px",
+                        {
+                                "lineHeight": "56px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "40px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "label-md": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "letterSpacing": "0.01em",
+                                "fontWeight": "500"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar for eco-utility aesthetic */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #10b981; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- TopNavBar -->
+<header class="bg-surface-container-lowest dark:bg-inverse-surface w-full sticky top-0 z-50 shadow-[0_4px_20px_rgba(31,41,55,0.08)]">
+<nav class="flex justify-between items-center px-margin-desktop py-4 w-full">
+<!-- Brand -->
+<div class="flex items-center gap-xs">
+<div class="w-8 h-8 flex items-center justify-center">
+data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAFZUlEQVR4AexZPYwbRRR+b507JMTdmp4iIZEQEh05ggSpAPnaEEVAGwkBzYUCIkBKvD4KhI6CXEO6lKQ4rsU+BBRJQY6jQ+JHkIAEZcC+SJFCEj++b+w5r3fXvrW9DiK61c7Oz/v9dvz2zYwD+Z9fewAGTWBYr54u16NrLGwP4pt0vPAZmG9EL9Np1eBDUd3PomiHjdpVlJcmdTgpXxiA+Xr0VNiIvg1EPxU6nrCkIgdQLpKHvAny2N1gbMmuYPjl+wfDRm09UL2iooe7wwMr8pCXMpQdyJiTMDaA8NIHD5cb0Tm90/5FRY5l2TOz8yxZNMpQljqoK4snz9joAL6PZsNG9JbevHVVRJck44LT67YvONRajN5gYZtjGawY0iXqok6BbgyMdI8EwAXoH/KTiq6IaFkSl4lttc2OwOnjrefO/OrJbHOMNPL48V6tZYXO8E/9MWzURgr0XAAYdOGQABWz39pir7Qq0cL2YrTZc6y/RRp5yEuZfqqIiowc6EMBMMjCevQZg04zA9SaJvZ28xF5bLsSXZScF3kpYyKnRayZFKMt2qTt8ufR/iQ93s8EwKBicMmd9g+q+mJcgG0TuQ3Dq/bgA4/ijX4kT0T/cHykAplWpbpCHU6X09mvQWHbAv25XK99TJ/6qZ1eCsBDG2fPyM1b1810CdM8YwJ3O7zuif6a7Aseb1aiU62j7/7tBid4UAd1UafTHdOFPrDZjKmcok9zjeo7MbJrpgCU2kEVUwjwIu4hKoQAZZ0ArUQnGJRS8EWdmM0TPtBhTxSG6YPClopqIMEymn13CoColuIcig6LiKoFwYxM+bKSzQpsqSgr6btMUvbTAIAa89Ynxw7UPVkyuxwi6zK4OVZkoU7qxi/gEm2ldcMxEJLjKQAKJgN6TqEludEH+RiDe1hggS33HXYzOnU63QlJ5wMeBp9AT1BFUgDIoXgoBFAhjm2ddbyoYCoRWJNkUGbdMJbRnc64EbR3sjeIuDGSvoP0UG+EQi6Dij6NGdnqUXxLx8qguTI6bNK2elMD6qEAvMx25ewVfCEWcmXQxvIRL5es50EL82Z02EzKZ/VzAfCCuTKo2DfJDOoClBkdNC0wo9OvEQCQHWWEDAogn4QbtfMuQJFVId13m8u+NlFGHx1A14VhGZQsKjKjqq+r2Wvop77fiKk1Zl9mYeoCz1h3MJZUTMhn0LtB+yje6HcxUrcJKCB0OwLHt9oM0IIy+sQAvGM3XqhdxuLscGagc00QX3LnDFCve1hdGABvxAc6XjVuvG88SePymTS2iyyFA3DOIdCZBxUPX8Zacjtlwx/TATDcZqHUPQCFvs4xlO3NwBgvrVCR+38GwimdKu82DW7JXY+u7caXngGT3+NC6g+b6rXNuY3lZ+K0abTnvqg+Gw5YcpvJzmmft50CYGonsSdOHzapLNy7PbFmnHJbEy/zVe+4r1MAsHH5auhhE0+iceB1D/fEt7EaOUefmovVr73jvk4BIIHLWy5zBQdYZv/xnhg+wPE36RN9S5ZMAJ7JLZUXo+P+sMmP92qd3p4445S7Z7fXGgrAsxV1qlzUKbf3i3UuAGRk4XKYy2KT3U+VyR8v2F4WfspN/SMBoACXxdi4rNwtzR7C12rVjSUe2EqmTrSzxjpitto2OYiPx1in3KMD6FiVG8+/d52B7v4+ElvrDneqHE9sddYoSx34if6VQySTZWwAXpsLdOxvBwe65+zUcLzQU+6JAXTcEsFb3MTPYOfwC456Ej7jiJr4nnjI31A7QjkbhQHw9lygL0YH4PUF5BBMjGGfLxeaGCPN8xVVFw7AO4ZzzZMopW7B8sRTiq2nBqBYNwdr+xcAAP//OLxtZwAAAAZJREFUAwBDMfx/YtnRBgAAAABJRU5ErkJggg==
+</div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary">Emerald</h1>
+</div>
+<!-- Nav Links -->
+<div class="hidden md:flex items-center gap-lg font-body-md text-body-md">
+<a class="text-secondary dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-inverse-primary transition-colors duration-200" href="#">Explore</a>
+<a class="text-secondary dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-inverse-primary transition-colors duration-200" href="#">Activity</a>
+<a class="text-secondary dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-inverse-primary transition-colors duration-200" href="#">Messages</a>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-md">
+<button class="bg-primary text-on-primary px-sm py-xs rounded-lg font-label-md text-label-md hover:opacity-90 active:scale-95 transition-all">
+                    Host Mode
+                </button>
+<div class="flex items-center gap-xs text-secondary">
+<span class="material-symbols-outlined cursor-pointer hover:bg-surface-container-low p-base rounded-full transition-colors" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:bg-surface-container-low p-base rounded-full transition-colors" data-icon="help">help</span>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a friendly individual, set against a minimalist clean office background with soft cinematic lighting. The portrait emphasizes clarity and approachability, using a cool color palette with emerald green accents to match the eco-tech branding." src="https://lh3.googleusercontent.com/aida-public/AB6AXuALoODlT2iBA7EL2zpRS8yOdCNEBfW-g8oBcgLm8sGuyvo1ftWD71K4Te3HlDQNhMRpFpRt2DIxmYfaD6YC05EjJrPWQPY5mkB1rmoEvr-rTJ8K-OCf6ifAqes-uRCdwBaZo3otSfkq3cvaBRJ5pc5oUXIrr707bC83opIw5WCQQS3-UEc1phAjuDQXt1wWyECZnQJ8I7eMSfhLO_nBwJ0OXsioI82g2o38dY67pIGdKIqM623tyvTwQJ2TW0utiaZMJ3G-W5RRoSM"/>
+</div>
+</div>
+</nav>
+</header>
+<main class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop py-lg grid grid-cols-1 lg:grid-cols-12 gap-lg">
+<!-- Welcome Header -->
+<div class="lg:col-span-12 mb-base">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Good Morning, Host</h2>
+<p class="font-body-md text-body-md text-secondary">Your charger at 124 Oak Street is active and ready.</p>
+</div>
+<!-- Metrics Row -->
+<section class="lg:col-span-12 grid grid-cols-1 md:grid-cols-3 gap-md">
+<!-- Metric Card 1 -->
+<div class="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_20px_rgba(31,41,55,0.08)] flex flex-col gap-xs border-l-4 border-primary">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Total Earnings</span>
+<div class="flex items-baseline gap-base">
+<span class="font-display-lg text-display-lg text-on-surface">$428.50</span>
+<span class="text-primary font-label-md text-label-md flex items-center"><span class="material-symbols-outlined text-[16px]">arrow_upward</span> 12%</span>
+</div>
+</div>
+<!-- Metric Card 2 -->
+<div class="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_20px_rgba(31,41,55,0.08)] flex flex-col gap-xs border-l-4 border-primary">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Hours Hosted</span>
+<div class="flex items-baseline gap-base">
+<span class="font-display-lg text-display-lg text-on-surface">156h</span>
+<span class="text-secondary font-label-md text-label-md">Lifetime</span>
+</div>
+</div>
+<!-- Metric Card 3 -->
+<div class="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_20px_rgba(31,41,55,0.08)] flex flex-col gap-xs border-l-4 border-primary">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Active Bookings</span>
+<div class="flex items-baseline gap-base">
+<span class="font-display-lg text-display-lg text-on-surface">3</span>
+<span class="bg-primary-container/20 text-on-primary-container px-xs py-[2px] rounded-full font-label-sm text-label-sm">Live Now</span>
+</div>
+</div>
+</section>
+<!-- Main Content Area -->
+<div class="lg:col-span-8 flex flex-col gap-lg">
+<!-- Calendar Grid Section -->
+<section class="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_20px_rgba(31,41,55,0.08)]">
+<div class="flex justify-between items-center mb-md">
+<h3 class="font-headline-md text-headline-md">Weekly Schedule</h3>
+<div class="flex gap-xs">
+<button class="p-xs hover:bg-surface-container-low rounded-lg transition-colors"><span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span></button>
+<button class="p-xs hover:bg-surface-container-low rounded-lg transition-colors"><span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span></button>
+</div>
+</div>
+<!-- Calendar Content -->
+<div class="grid grid-cols-8 border-t border-outline-variant">
+<!-- Header -->
+<div class="py-sm border-b border-outline-variant"></div>
+<div class="py-sm text-center font-label-md text-label-md text-secondary border-b border-outline-variant">Mon</div>
+<div class="py-sm text-center font-label-md text-label-md text-secondary border-b border-outline-variant">Tue</div>
+<div class="py-sm text-center font-label-md text-label-md text-secondary border-b border-outline-variant">Wed</div>
+<div class="py-sm text-center font-label-md text-label-md text-secondary border-b border-outline-variant">Thu</div>
+<div class="py-sm text-center font-label-md text-label-md text-secondary border-b border-outline-variant">Fri</div>
+<div class="py-sm text-center font-label-md text-label-md text-secondary border-b border-outline-variant">Sat</div>
+<div class="py-sm text-center font-label-md text-label-md text-secondary border-b border-outline-variant">Sun</div>
+<!-- Row: Morning -->
+<div class="py-lg text-right pr-base font-label-sm text-label-sm text-secondary border-b border-outline-variant">08:00 AM</div>
+<div class="bg-primary-container/20 border-b border-outline-variant relative group cursor-pointer hover:bg-primary-container/30 transition-colors">
+<div class="absolute inset-2 bg-primary rounded-lg p-xs text-on-primary font-label-sm text-label-sm flex items-center justify-center opacity-90">
+                            Booked
+                        </div>
+</div>
+<div class="bg-surface-container-low border-b border-outline-variant"></div>
+<div class="bg-primary-container/20 border-b border-outline-variant relative">
+<div class="absolute inset-2 bg-primary rounded-lg p-xs text-on-primary font-label-sm text-label-sm flex items-center justify-center">
+                            Booked
+                        </div>
+</div>
+<div class="bg-surface-container-low border-b border-outline-variant"></div>
+<div class="bg-surface-container-low border-b border-outline-variant"></div>
+<div class="bg-tertiary-container/10 border-b border-outline-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-outline text-[18px]" data-icon="block">block</span>
+</div>
+<div class="bg-tertiary-container/10 border-b border-outline-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-outline text-[18px]" data-icon="block">block</span>
+</div>
+<!-- Row: Afternoon -->
+<div class="py-lg text-right pr-base font-label-sm text-label-sm text-secondary border-b border-outline-variant">02:00 PM</div>
+<div class="bg-surface-container-low border-b border-outline-variant"></div>
+<div class="bg-primary-container/20 border-b border-outline-variant relative">
+<div class="absolute inset-2 bg-primary rounded-lg p-xs text-on-primary font-label-sm text-label-sm flex items-center justify-center">
+                            Booked
+                        </div>
+</div>
+<div class="bg-surface-container-low border-b border-outline-variant"></div>
+<div class="bg-surface-container-low border-b border-outline-variant"></div>
+<div class="bg-primary-container/20 border-b border-outline-variant relative">
+<div class="absolute inset-2 bg-primary rounded-lg p-xs text-on-primary font-label-sm text-label-sm flex items-center justify-center">
+                            Booked
+                        </div>
+</div>
+<div class="bg-surface-container-low border-b border-outline-variant"></div>
+<div class="bg-surface-container-low border-b border-outline-variant"></div>
+<!-- Row: Evening -->
+<div class="py-lg text-right pr-base font-label-sm text-label-sm text-secondary">08:00 PM</div>
+<div class="bg-surface-container-low"></div>
+<div class="bg-surface-container-low"></div>
+<div class="bg-surface-container-low"></div>
+<div class="bg-primary-container/20 relative">
+<div class="absolute inset-2 bg-primary rounded-lg p-xs text-on-primary font-label-sm text-label-sm flex items-center justify-center">
+                            Booked
+                        </div>
+</div>
+<div class="bg-surface-container-low"></div>
+<div class="bg-surface-container-low"></div>
+<div class="bg-surface-container-low"></div>
+</div>
+</section>
+<!-- Activity List -->
+<section class="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_20px_rgba(31,41,55,0.08)]">
+<h3 class="font-headline-md text-headline-md mb-md">Recent Transactions</h3>
+<div class="space-y-sm">
+<div class="flex items-center justify-between p-sm hover:bg-surface-container-low rounded-xl transition-all cursor-pointer">
+<div class="flex items-center gap-sm">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="electric_car">electric_car</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Booking by Sarah J.</p>
+<p class="font-label-sm text-label-sm text-secondary">Tesla Model 3 • 2h 15m</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-label-md text-label-md text-primary">+$18.40</p>
+<p class="font-label-sm text-label-sm text-secondary">Today, 9:30 AM</p>
+</div>
+</div>
+<div class="flex items-center justify-between p-sm hover:bg-surface-container-low rounded-xl transition-all cursor-pointer">
+<div class="flex items-center gap-sm">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="electric_car">electric_car</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Booking by Marcus K.</p>
+<p class="font-label-sm text-label-sm text-secondary">Rivian R1T • 4h 00m</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-label-md text-label-md text-primary">+$32.00</p>
+<p class="font-label-sm text-label-sm text-secondary">Yesterday</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Side Panel -->
+<aside class="lg:col-span-4 flex flex-col gap-lg">
+<!-- Status Card -->
+<section class="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_20px_rgba(31,41,55,0.08)] flex flex-col gap-md">
+<div class="flex justify-between items-center">
+<h3 class="font-label-md text-label-md uppercase tracking-wider text-secondary">Charger Status</h3>
+<div class="flex items-center gap-xs px-xs py-base bg-primary-container/20 text-on-primary-container rounded-full animate-pulse">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<span class="font-label-sm text-label-sm font-bold">Online</span>
+</div>
+</div>
+<div class="relative h-48 rounded-lg overflow-hidden group">
+<img class="w-full h-full object-cover" data-alt="A close-up photograph of a sleek, modern electric vehicle charging station mounted on a pristine white architectural wall. The charger features minimalist glowing LEDs in emerald green, indicating active energy flow. The lighting is bright and airy, representing a premium home utility setup in a high-end residential garage." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCu0g3c8O3Z3wv6yxQbBuqNgGig50DDIGg2mS-VYQerzBrorudcIMHjBlCH_qixK7HrroyZcNjL-0Zh_MBl3peFYBqMN_eY42r2bi2vektkqR8KfmEzUe6HFUT57gZ2O9co2R-y-3xKspNgh2LVtUwcBoRy6rXU8YeOhYKY0yM_6tNSlnGrRwKtmz1OhPZaZtfqTB5z_i66VBJRQZwjdcldnBFlchrn7DemUpi14-CWiFBsa7__4NC5sZoNCcQCwgbHawq1RJawRBw"/>
+<div class="absolute inset-0 bg-gradient-to-t from-on-background/60 to-transparent flex items-end p-sm">
+<p class="text-on-primary font-label-md text-label-md">Home Station Alpha</p>
+</div>
+</div>
+<div class="space-y-sm">
+<div class="flex justify-between items-center py-xs border-b border-outline-variant">
+<span class="font-body-md text-body-md text-secondary">Pricing</span>
+<span class="font-label-md text-label-md text-on-surface font-bold">$0.35/kWh</span>
+</div>
+<div class="flex justify-between items-center py-xs border-b border-outline-variant">
+<span class="font-body-md text-body-md text-secondary">Type</span>
+<span class="font-label-md text-label-md text-on-surface">Level 2 (J1772)</span>
+</div>
+<div class="flex justify-between items-center py-xs">
+<span class="font-body-md text-body-md text-secondary">Instant Booking</span>
+<div class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</div>
+</div>
+</div>
+<button class="w-full py-sm border-2 border-primary text-primary rounded-lg font-label-md text-label-md hover:bg-primary/5 transition-all">
+                    Edit Charger Details
+                </button>
+</section>
+<!-- Map/Location Mini -->
+<section class="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_20px_rgba(31,41,55,0.08)] flex flex-col gap-md">
+<h3 class="font-label-md text-label-md uppercase tracking-wider text-secondary">Local Demand</h3>
+<div class="h-32 rounded-lg bg-surface-container-low relative flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover grayscale opacity-50" data-alt="A stylized minimalist map of a modern urban neighborhood with soft emerald hotspots indicating high demand for EV charging stations. The aesthetic is clean, with light gray roads and white blocks, emphasizing a digital utility interface." data-location="Seattle" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB5y-d77gC22MJsIIEoIPXSFyFQipSs6PYt3HHrqha3LeBvec71S5ffpPSeQyYKK5MQnhSowx4Y94N2DVBVgsnNELhHBkaTkx7sEx05YwmRfImHiLr_EQ9Q52P42A-mATDK1_Reywz471ONudoer3vgoqruShdyXcVYiQRSZwyq-qQ_NEQG2s_N6KITZKzfnkFLuRh7x5SOFPokUkXt5DKxdk8IBT0N7Y6qvFFHjT5MCro1KFNJ-HjRnjR-auJOQPo06WJbCq2dbHw"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="bg-surface-container-lowest/90 backdrop-blur-sm px-md py-xs rounded-full border border-primary-container shadow-sm">
+<span class="font-label-md text-label-md text-primary">High Demand Area</span>
+</div>
+</div>
+</div>
+<p class="font-body-md text-body-md text-secondary text-center px-sm">Hosts in your area earned 15% more this week.</p>
+</section>
+</aside>
+</main>
+<!-- FAB for quick action -->
+<button class="fixed bottom-lg right-lg w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center hover:scale-110 active:scale-90 transition-all z-50">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+</button>
+<script>
+        // Micro-interactions
+        document.querySelectorAll('.active\\:scale-95').forEach(button => {
+            button.addEventListener('mousedown', () => {
+                button.classList.add('scale-95');
+            });
+            button.addEventListener('mouseup', () => {
+                button.classList.remove('scale-95');
+            });
+        });
+
+        // Simple toggle logic simulator
+        const toggles = document.querySelectorAll('input[type="checkbox"]');
+        toggles.forEach(toggle => {
+            toggle.addEventListener('change', (e) => {
+                const parent = e.target.closest('section');
+                if (parent) {
+                    // Logic for visual feedback
+                }
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Charger Settings | Emerald</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#f0f3ff",
+                        "error-container": "#ffdad6",
+                        "surface-container": "#e7eeff",
+                        "background": "#f9f9ff",
+                        "on-tertiary-fixed-variant": "#842225",
+                        "on-background": "#191c1e",
+                        "surface": "#f9f9ff",
+                        "on-surface": "#191c1e",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed": "#002113",
+                        "surface-dim": "#d3daea",
+                        "surface-container-highest": "#dee3f2",
+                        "outline": "#6c7a71",
+                        "tertiary-fixed": "#ffdad7",
+                        "surface-variant": "#dee3f2",
+                        "primary-container": "#10b981",
+                        "on-secondary-fixed-variant": "#3d4756",
+                        "on-surface-variant": "#3c4a42",
+                        "on-primary-container": "#00422b",
+                        "primary": "#10b981",
+                        "surface-container-lowest": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-tint": "#10b981",
+                        "secondary": "#555f6f",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#6ffbbe",
+                        "inverse-on-surface": "#eff1f3",
+                        "tertiary-container": "#fc7c78",
+                        "on-secondary-container": "#596373",
+                        "on-tertiary-fixed": "#410005",
+                        "surface-bright": "#f9f9ff",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#4edea3",
+                        "tertiary": "#a43a3a",
+                        "on-error": "#ffffff",
+                        "secondary-container": "#d6e0f3",
+                        "outline-variant": "#bbcabf",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed": "#121c2a",
+                        "secondary-fixed": "#d9e3f6",
+                        "on-tertiary-container": "#711419",
+                        "primary-fixed-dim": "#4edea3",
+                        "on-primary-fixed-variant": "#005236",
+                        "tertiary-fixed-dim": "#ffb3af",
+                        "inverse-surface": "#2d3133",
+                        "surface-container-high": "#e1e7f6",
+                        "secondary-fixed-dim": "#bdc7d9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "40px",
+                        "gutter": "16px",
+                        "base": "4px",
+                        "md": "24px",
+                        "margin-mobile": "20px",
+                        "xs": "8px",
+                        "margin-desktop": "48px",
+                        "sm": "16px",
+                        "xl": "64px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #f9f9ff;
+            font-family: 'Inter', sans-serif;
+            color: #191c1e;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-shadow {
+            box-shadow: 0 4px 20px rgba(31, 41, 55, 0.08);
+        }
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #10B981;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #10B981;
+        }
+    </style>
+</head>
+<body class="flex min-h-screen">
+<!-- SideNavBar (Authority: Shared Components JSON) -->
+<aside class="h-screen w-64 fixed left-0 top-0 hidden lg:flex flex-col bg-surface dark:bg-on-background border-r border-outline-variant dark:border-outline p-sm gap-base z-40">
+<div class="flex items-center gap-sm px-xs py-md">
+<div class="w-8 h-8 flex items-center justify-center">
+data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAFZUlEQVR4AexZPYwbRRR+b507JMTdmp4iIZEQEh05ggSpAPnaEEVAGwkBzYUCIkBKvD4KhI6CXEO6lKQ4rsU+BBRJQY6jQ+JHkIAEZcC+SJFCEj++b+w5r3fXvrW9DiK61c7Oz/v9dvz2zYwD+Z9fewAGTWBYr54u16NrLGwP4pt0vPAZmG9EL9Np1eBDUd3PomiHjdpVlJcmdTgpXxiA+Xr0VNiIvg1EPxU6nrCkIgdQLpKHvAny2N1gbMmuYPjl+wfDRm09UL2iooe7wwMr8pCXMpQdyJiTMDaA8NIHD5cb0Tm90/5FRY5l2TOz8yxZNMpQljqoK4snz9joAL6PZsNG9JbevHVVRJck44LT67YvONRajN5gYZtjGawY0iXqok6BbgyMdI8EwAXoH/KTiq6IaFkSl4lttc2OwOnjrefO/OrJbHOMNPL48V6tZYXO8E/9MWzURgr0XAAYdOGQABWz39pir7Qq0cL2YrTZc6y/RRp5yEuZfqqIiowc6EMBMMjCevQZg04zA9SaJvZ28xF5bLsSXZScF3kpYyKnRayZFKMt2qTt8ufR/iQ93s8EwKBicMmd9g+q+mJcgG0TuQ3Dq/bgA4/ijX4kT0T/cHykAplWpbpCHU6X09mvQWHbAv25XK99TJ/6qZ1eCsBDG2fPyM1b1810CdM8YwJ3O7zuif6a7Aseb1aiU62j7/7tBid4UAd1UafTHdOFPrDZjKmcok9zjeo7MbJrpgCU2kEVUwjwIu4hKoQAZZ0ArUQnGJRS8EWdmM0TPtBhTxSG6YPClopqIMEymn13CoColuIcig6LiKoFwYxM+bKSzQpsqSgr6btMUvbTAIAa89Ynxw7UPVkyuxwi6zK4OVZkoU7qxi/gEm2ldcMxEJLjKQAKJgN6TqEludEH+RiDe1hggS33HXYzOnU63QlJ5wMeBp9AT1BFUgDIoXgoBFAhjm2ddbyoYCoRWJNkUGbdMJbRnc64EbR3sjeIuDGSvoP0UG+EQi6Dij6NGdnqUXxLx8qguTI6bNK2elMD6qEAvMx25ewVfCEWcmXQxvIRL5es50EL82Z02EzKZ/VzAfCCuTKo2DfJDOoClBkdNC0wo9OvEQCQHWWEDAogn4QbtfMuQJFVId13m8u+NlFGHx1A14VhGZQsKjKjqq+r2Wvop77fiKk1Zl9mYeoCz1h3MJZUTMhn0LtB+yje6HcxUrcJKCB0OwLHt9oM0IIy+sQAvGM3XqhdxuLscGagc00QX3LnDFCve1hdGABvxAc6XjVuvG88SePymTS2iyyFA3DOIdCZBxUPX8Zacjtlwx/TATDcZqHUPQCFvs4xlO3NwBgvrVCR+38GwimdKu82DW7JXY+u7caXngGT3+NC6g+b6rXNuY3lZ+K0abTnvqg+Gw5YcpvJzmmft50CYGonsSdOHzapLNy7PbFmnHJbEy/zVe+4r1MAsHH5auhhE0+iceB1D/fEt7EaOUefmovVr73jvk4BIIHLWy5zBQdYZv/xnhg+wPE36RN9S5ZMAJ7JLZUXo+P+sMmP92qd3p4445S7Z7fXGgrAsxV1qlzUKbf3i3UuAGRk4XKYy2KT3U+VyR8v2F4WfspN/SMBoACXxdi4rNwtzR7C12rVjSUe2EqmTrSzxjpitto2OYiPx1in3KMD6FiVG8+/d52B7v4+ElvrDneqHE9sddYoSx34if6VQySTZWwAXpsLdOxvBwe65+zUcLzQU+6JAXTcEsFb3MTPYOfwC456Ej7jiJr4nnjI31A7QjkbhQHw9lygL0YH4PUF5BBMjGGfLxeaGCPN8xVVFw7AO4ZzzZMopW7B8sRTiq2nBqBYNwdr+xcAAP//OLxtZwAAAAZJREFUAwBDMfx/YtnRBgAAAABJRU5ErkJggg==
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary leading-tight">Emerald</h1>
+<p class="text-on-surface-variant font-label-sm text-label-sm">Eco-Utility Platform</p>
+</div>
+</div>
+<nav class="flex-grow mt-md space-y-xs">
+<a class="flex items-center gap-sm p-sm text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-variant rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-sm p-sm text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-variant rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-md text-label-md">Map View</span>
+</a>
+<a class="flex items-center gap-sm p-sm text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-variant rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-label-md text-label-md">Earnings</span>
+</a>
+<a class="flex items-center gap-sm p-sm text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-variant rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-md text-label-md">Charging History</span>
+</a>
+<!-- Active State Mapping: Settings -->
+<a class="flex items-center gap-sm p-sm bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-md">
+<button class="w-full py-md px-lg bg-primary text-white font-label-md text-label-md rounded-lg hover:brightness-110 active:scale-95 transition-all shadow-md">
+                Book Charger
+            </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 lg:ml-64 p-margin-mobile lg:p-margin-desktop bg-background">
+<!-- Header -->
+<header class="flex flex-col md:flex-row md:items-center justify-between mb-xl gap-sm">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Charger Settings</h2>
+<p class="text-on-surface-variant font-body-md text-body-md">Configure your host station details and visibility.</p>
+</div>
+<!-- Status Toggle -->
+<div class="flex items-center gap-md bg-surface-container-low p-sm rounded-lg border border-outline-variant">
+<span class="font-label-md text-label-md text-primary font-semibold uppercase tracking-wider" id="status-label">Online</span>
+<div class="relative inline-block w-12 h-6 transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-2 border-outline-variant appearance-none cursor-pointer z-10 checked:translate-x-6 transition-transform duration-200" id="status-toggle" name="status-toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-dim cursor-pointer transition-colors duration-200" for="status-toggle"></label>
+</div>
+</div>
+</header>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg">
+<!-- Section 1: Charger Information -->
+<section class="lg:col-span-8 bg-surface-container-lowest rounded-lg p-md custom-shadow">
+<div class="flex items-center gap-sm mb-md border-b border-outline-variant pb-sm">
+<span class="material-symbols-outlined text-primary">info</span>
+<h3 class="font-headline-md text-headline-md">Charger Information</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant">Charger Nickname</label>
+<input class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface font-body-md text-body-md px-md py-sm" type="text" value="Home Station Alpha"/>
+</div>
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant">Charger Model</label>
+<input class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface font-body-md text-body-md px-md py-sm" type="text" value="EcoCharge v4.2"/>
+</div>
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant">Connector Type</label>
+<select class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface font-body-md text-body-md px-md py-sm">
+<option>Level 2</option>
+<option selected="">Tesla NACS</option>
+<option>J1772</option>
+<option>CCS1</option>
+</select>
+</div>
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant">Serial Number</label>
+<input class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface font-body-md text-body-md px-md py-sm" type="text" value="EM-HOST-88293-XP"/>
+</div>
+</div>
+<div class="mt-md">
+<label class="font-label-md text-label-md text-on-surface-variant mb-xs block">Charger Photo</label>
+<div class="relative w-full h-48 rounded-lg overflow-hidden group cursor-pointer border-2 border-dashed border-outline-variant hover:border-primary transition-colors flex items-center justify-center bg-surface-container-low">
+<img class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" data-alt="A professional, crisp high-angle photo of a modern wall-mounted electric vehicle charging station installed in a clean, minimalist residential garage. The lighting is soft and high-key, emphasizing the sleek industrial design of the emerald green LED indicators on the charger. The overall mood is technological, sustainable, and premium, consistent with a modern eco-tech aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0S1tb5YOnIJSGzpNILMlf0lj-tezHBkseLagR9h3PKQoSXWvVzIRidW2YtyfaVowd0eKaqXt1DHQn093YDk8spK8DRd3i8heKjMneFGVbmPrrkTDtx1RHT6wPSk_5fULoq6vxa4byK3zcNwwgS-2mjG74jEYsjFIG6s80sQuFRWiZnCY8hUr6IZwuazhEzbPbBJtH0ipo4f-AqGLRPFa-5t6LPz8mNdbvoGCNh4d-rq9fn97-ascx-fCTDyOSxo3JrBmDooKe1Zg"/>
+<div class="z-10 flex flex-col items-center text-on-surface-variant group-hover:text-primary">
+<span class="material-symbols-outlined text-[40px]">add_a_photo</span>
+<span class="font-label-md text-label-md mt-xs">Update Station Photo</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: Pricing & Payments -->
+<section class="lg:col-span-4 space-y-lg">
+<div class="bg-surface-container-lowest rounded-lg p-md custom-shadow">
+<div class="flex items-center gap-sm mb-md border-b border-outline-variant pb-sm">
+<span class="material-symbols-outlined text-primary">payments</span>
+<h3 class="font-headline-md text-headline-md">Pricing &amp; Payments</h3>
+</div>
+<div class="space-y-md">
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant">Price per kWh ($)</label>
+<div class="relative">
+<span class="absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant">$</span>
+<input class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface font-body-md text-body-md pl-xl pr-md py-sm" type="number" value="0.45"/>
+</div>
+</div>
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant">Flat Booking Fee (Optional)</label>
+<div class="relative">
+<span class="absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant">$</span>
+<input class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface font-body-md text-body-md pl-xl pr-md py-sm" placeholder="0.00" type="number"/>
+</div>
+</div>
+<div class="flex items-center justify-between p-sm bg-surface-container rounded-lg">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md">Instant Book</span>
+<span class="text-[11px] text-on-surface-variant">Allow automatic confirmation</span>
+</div>
+<div class="relative inline-block w-10 h-5">
+<input class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-2 border-outline-variant appearance-none cursor-pointer z-10 checked:translate-x-5 transition-transform duration-200" id="instant-book" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-5 rounded-full bg-surface-dim cursor-pointer transition-colors duration-200" for="instant-book"></label>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 3: Access & Security -->
+<div class="bg-surface-container-lowest rounded-lg p-md custom-shadow">
+<div class="flex items-center gap-sm mb-md border-b border-outline-variant pb-sm">
+<span class="material-symbols-outlined text-primary">security</span>
+<h3 class="font-headline-md text-headline-md">Access &amp; Security</h3>
+</div>
+<div class="space-y-md">
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant">Access Instructions</label>
+<textarea class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface font-body-md text-body-md px-md py-sm resize-none" rows="3">Driveway gate code is 1234. The charger is located on the left side of the garage. Please park within the white lines.</textarea>
+</div>
+<div class="flex items-center justify-between p-sm bg-surface-container rounded-lg">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md">Publicly Visible</span>
+<span class="text-[11px] text-on-surface-variant">Show station on global map</span>
+</div>
+<div class="relative inline-block w-10 h-5">
+<input checked="" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-2 border-outline-variant appearance-none cursor-pointer z-10 checked:translate-x-5 transition-transform duration-200" id="public-visible" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-5 rounded-full bg-surface-dim cursor-pointer transition-colors duration-200" for="public-visible"></label>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 4: Maintenance & Support -->
+<section class="lg:col-span-12">
+<div class="bg-surface-container-lowest rounded-lg p-md custom-shadow border-l-4 border-primary">
+<div class="flex items-center gap-sm mb-md">
+<span class="material-symbols-outlined text-primary">settings_suggest</span>
+<h3 class="font-headline-md text-headline-md">Maintenance &amp; Support</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<button class="flex items-center justify-between p-md bg-surface hover:bg-surface-container-high border border-outline-variant rounded-lg transition-colors group">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary">biotech</span>
+<span class="font-label-md text-label-md">Run Diagnostic Test</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</button>
+<button class="flex items-center justify-between p-md bg-surface hover:bg-surface-container-high border border-outline-variant rounded-lg transition-colors group">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary">system_update</span>
+<div class="text-left">
+<p class="font-label-md text-label-md">Update Firmware</p>
+<p class="text-[10px] text-primary font-bold">New Version Available</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</button>
+<button class="flex items-center justify-between p-md bg-surface hover:bg-surface-container-high border border-outline-variant rounded-lg transition-colors group">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary">support_agent</span>
+<span class="font-label-md text-label-md">Contact Support</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+<!-- Sticky Bottom Actions for Mobile -->
+<div class="mt-xl flex justify-end gap-md">
+<button class="px-xl py-sm bg-surface-variant text-on-surface-variant font-label-md text-label-md rounded-lg hover:bg-surface-container-highest transition-all">
+                Discard Changes
+            </button>
+<button class="px-xl py-sm bg-primary text-on-primary font-label-md text-label-md rounded-lg hover:brightness-110 active:scale-95 transition-all shadow-md">
+                Save Settings
+            </button>
+</div>
+</main>
+<script>
+        // Micro-interaction for status toggle
+        const toggle = document.getElementById('status-toggle');
+        const label = document.getElementById('status-label');
+
+        toggle.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                label.innerText = 'Online';
+                label.classList.remove('text-on-surface-variant');
+                label.classList.add('text-primary');
+            } else {
+                label.innerText = 'Offline';
+                label.classList.remove('text-primary');
+                label.classList.add('text-on-surface-variant');
+            }
+        });
+
+        // Diagnostic animation simulation
+        document.querySelectorAll('button').forEach(btn => {
+            if (btn.innerText.includes('Diagnostic')) {
+                btn.addEventListener('click', () => {
+                    const originalContent = btn.innerHTML;
+                    btn.innerHTML = `
+                        <div class="flex items-center gap-sm">
+                            <svg class="animate-spin h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <span class="font-label-md text-label-md">Running Test...</span>
+                        </div>
+                    `;
+                    setTimeout(() => {
+                        btn.innerHTML = `
+                            <div class="flex items-center gap-sm">
+                                <span class="material-symbols-outlined text-primary">check_circle</span>
+                                <span class="font-label-md text-label-md text-primary">System Healthy</span>
+                            </div>
+                        `;
+                        setTimeout(() => btn.innerHTML = originalContent, 3000);
+                    }, 2000);
+                });
+            }
+        });
+    </script>
+</body></html>

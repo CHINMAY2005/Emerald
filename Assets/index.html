@@ -1,0 +1,1881 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emerald Network | P2P EV Charging Marketplace</title>
+  
+  <!-- Tailwind CSS & Flowbite / Tailwind forms -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#10b981',
+            'primary-hover': '#059669',
+            'primary-dark': '#065f46',
+            'primary-light': '#34d399',
+            'bg-dark': '#0b0f19',
+            'card-dark': 'rgba(17, 24, 39, 0.75)',
+            'border-dark': 'rgba(16, 185, 129, 0.15)',
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Leaflet Map CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/css/app-styles.css" />
+  
+  <!-- Google Material Symbols -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+</head>
+<body class="bg-bg-dark text-gray-100 min-h-screen flex flex-col font-sans overflow-x-hidden custom-scrollbar">
+
+  <!-- ==================== TOAST NOTIFICATION CONTAINER ==================== -->
+  <div id="toast-container" class="fixed top-6 right-6 z-[9999] flex flex-col gap-3 pointer-events-none"></div>
+
+  <!-- ==================== VIEW 1: LANDING & AUTH VIEW ==================== -->
+  <div id="view-landing" class="view-panel active min-h-screen flex flex-col items-center justify-center relative px-4">
+    <!-- Glow Background Effects -->
+    <div class="absolute w-[500px] h-[500px] rounded-full bg-primary/5 blur-[120px] top-[-100px] left-[-100px] pointer-events-none"></div>
+    <div class="absolute w-[600px] h-[600px] rounded-full bg-primary/5 blur-[120px] bottom-[-150px] right-[-150px] pointer-events-none"></div>
+
+    <div class="max-w-4xl w-full text-center z-10">
+      <!-- Logo -->
+      <div class="flex items-center justify-center gap-3 mb-6">
+        <div class="bg-primary p-2.5 rounded-xl shadow-[0_0_25px_rgba(16,185,129,0.3)] flex items-center justify-center">
+          <span class="material-symbols-outlined text-white text-3xl font-bold" style="font-variation-settings: 'FILL' 1;">eco</span>
+        </div>
+        <span class="font-heading text-4xl font-extrabold bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">Emerald</span>
+      </div>
+
+      <div class="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider mb-8">
+        <span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+        Platform Online
+      </div>
+
+      <h1 class="font-heading text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-6">
+        Welcome to Emerald Network
+      </h1>
+      <p class="text-gray-400 text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
+        The next-generation, peer-to-peer EV charging marketplace. Connecting drivers with private charging hosts in real-time. Share clean energy, earn revenue, and charge smarter on a secure, decentralized grid.
+      </p>
+
+      <!-- Auth Panels -->
+      <div class="max-w-md mx-auto bg-gray-900/60 border border-primary/20 rounded-2xl p-8 backdrop-blur-xl shadow-2xl">
+        
+        <!-- Tab selector -->
+        <div class="flex bg-gray-800/80 p-1 rounded-xl mb-6">
+          <button id="tab-login" class="flex-1 py-2 text-sm font-semibold rounded-lg bg-primary text-white shadow transition-all" onclick="switchAuthTab('login')">Log In</button>
+          <button id="tab-register" class="flex-1 py-2 text-sm font-semibold rounded-lg text-gray-400 hover:text-white transition-all" onclick="switchAuthTab('register')">Register</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="form-login" onsubmit="handleAuthSubmit(event, 'login')" class="space-y-4">
+          <div>
+            <label class="block text-left text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Email Address</label>
+            <input type="email" id="login-email" required class="w-full bg-gray-800/50 border border-gray-700 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 transition-all" placeholder="name@email.com">
+          </div>
+          <div>
+            <label class="block text-left text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Password</label>
+            <input type="password" id="login-password" required class="w-full bg-gray-800/50 border border-gray-700 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 transition-all" placeholder="••••••••">
+          </div>
+          <button type="submit" class="w-full bg-gradient-to-r from-primary to-primary-hover hover:brightness-110 text-white font-bold py-3 rounded-xl shadow-[0_4px_15px_rgba(16,185,129,0.3)] transition-all transform active:scale-[0.98]">
+            Sign In to Platform
+          </button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="form-register" onsubmit="handleAuthSubmit(event, 'register')" class="space-y-4 hidden">
+          <div>
+            <label class="block text-left text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Full Name</label>
+            <input type="text" id="register-name" required class="w-full bg-gray-800/50 border border-gray-700 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 transition-all" placeholder="John Doe">
+          </div>
+          <div>
+            <label class="block text-left text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Email Address</label>
+            <input type="email" id="register-email" required class="w-full bg-gray-800/50 border border-gray-700 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 transition-all" placeholder="name@email.com">
+          </div>
+          <div>
+            <label class="block text-left text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Password</label>
+            <input type="password" id="register-password" required class="w-full bg-gray-800/50 border border-gray-700 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 transition-all" placeholder="At least 8 characters">
+          </div>
+          <div>
+            <label class="block text-left text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Primary Role</label>
+            <select id="register-role" class="w-full bg-gray-800/50 border border-gray-700 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-4 py-3 text-sm text-white transition-all">
+              <option value="driver">EV Driver (Find Chargers & Charge)</option>
+              <option value="host">Charger Host (List Chargers & Earn)</option>
+            </select>
+          </div>
+          <button type="submit" class="w-full bg-gradient-to-r from-primary to-primary-hover hover:brightness-110 text-white font-bold py-3 rounded-xl shadow-[0_4px_15px_rgba(16,185,129,0.3)] transition-all transform active:scale-[0.98]">
+            Create Account
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== VIEW 2: GLOBAL PORTAL APPLICATION SHELL ==================== -->
+  <div id="view-portal" class="view-panel h-screen w-full flex overflow-hidden hidden">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="w-64 bg-gray-900 border-r border-border-dark flex flex-col shrink-0">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3 px-6 py-6 border-b border-border-dark">
+        <div class="bg-primary p-2 rounded-lg flex items-center justify-center">
+          <span class="material-symbols-outlined text-white text-xl font-bold" style="font-variation-settings: 'FILL' 1;">eco</span>
+        </div>
+        <div>
+          <span class="font-heading text-lg font-bold text-white tracking-wide leading-none">Emerald</span>
+          <span class="block text-[10px] text-primary font-semibold tracking-widest uppercase mt-0.5">ECO-UTILITY</span>
+        </div>
+      </div>
+
+      <!-- Navigation Menus (Dynamic based on selected Role) -->
+      <div class="flex-1 py-6 px-4 space-y-8 overflow-y-auto custom-scrollbar">
+        
+        <!-- EV Driver Menu -->
+        <div id="menu-driver-section">
+          <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest px-3 mb-3">Driver Dashboard</p>
+          <nav class="space-y-1">
+            <button id="nav-driver-explore" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-semibold rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition-all active-nav-item" onclick="switchPortalTab('driver-explore')">
+              <span class="material-symbols-outlined text-gray-400">map</span> Explore Chargers
+            </button>
+            <button id="nav-driver-activity" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-semibold rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition-all" onclick="switchPortalTab('driver-activity')">
+              <span class="material-symbols-outlined text-gray-400">electric_car</span> My Charging
+            </button>
+          </nav>
+        </div>
+
+        <!-- Charger Host Menu -->
+        <div id="menu-host-section" class="hidden">
+          <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest px-3 mb-3">Host Administration</p>
+          <nav class="space-y-1">
+            <button id="nav-host-overview" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-semibold rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition-all" onclick="switchPortalTab('host-overview')">
+              <span class="material-symbols-outlined text-gray-400">dashboard</span> Overview Dashboard
+            </button>
+            <button id="nav-host-chargers" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-semibold rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition-all" onclick="switchPortalTab('host-chargers')">
+              <span class="material-symbols-outlined text-gray-400">ev_station</span> Manage Chargers
+            </button>
+            <button id="nav-host-wallet" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-semibold rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition-all" onclick="switchPortalTab('host-wallet')">
+              <span class="material-symbols-outlined text-gray-400">account_balance_wallet</span> Payouts & Wallet
+            </button>
+            <button id="nav-host-analytics" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-semibold rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition-all" onclick="switchPortalTab('host-analytics')">
+              <span class="material-symbols-outlined text-gray-400">insights</span> Revenue Analytics
+            </button>
+          </nav>
+        </div>
+
+      </div>
+
+      <!-- User Profile Card -->
+      <div class="p-4 border-t border-border-dark bg-gray-950/40 flex items-center justify-between">
+        <div class="flex items-center gap-3 overflow-hidden">
+          <div class="w-10 h-10 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary font-bold shrink-0" id="user-avatar-initial">U</div>
+          <div class="overflow-hidden">
+            <span class="block text-sm font-semibold text-white truncate" id="user-display-name">Username</span>
+            <span class="block text-[10px] text-gray-400 capitalize" id="user-display-role">Role</span>
+          </div>
+        </div>
+        <button class="material-symbols-outlined text-gray-500 hover:text-red-400 transition-colors" onclick="handleLogout()">logout</button>
+      </div>
+
+    </aside>
+
+    <!-- Main Container -->
+    <main class="flex-grow flex flex-col overflow-hidden bg-gray-950">
+      
+      <!-- Top Navigation Header -->
+      <header class="h-16 border-b border-border-dark flex items-center justify-between px-8 bg-gray-900 shrink-0">
+        
+        <!-- View Status Title -->
+        <h2 id="portal-view-title" class="font-heading text-lg font-bold text-white">Explore Charging Nodes</h2>
+
+        <!-- Action Widgets -->
+        <div class="flex items-center gap-6">
+          
+          <!-- Role Toggle Controller -->
+          <div class="bg-gray-950 p-1 rounded-full border border-border-dark flex items-center">
+            <button id="toggle-role-driver" class="px-4 py-1.5 rounded-full text-xs font-semibold bg-primary text-white shadow-sm transition-all" onclick="setUserRole('driver')">Driver Mode</button>
+            <button id="toggle-role-host" class="px-4 py-1.5 rounded-full text-xs font-semibold text-gray-400 hover:text-white transition-all" onclick="setUserRole('host')">Host Mode</button>
+          </div>
+
+          <div class="h-4 w-px bg-gray-800"></div>
+
+          <!-- Notifications -->
+          <div class="relative">
+            <button class="material-symbols-outlined text-gray-400 hover:text-white transition-colors relative">
+              notifications
+              <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-primary border-2 border-gray-900 rounded-full"></span>
+            </button>
+          </div>
+
+        </div>
+
+      </header>
+
+      <!-- View Panel Dashboard Pages -->
+      <div class="flex-grow overflow-hidden relative">
+        
+        <!-- ==================== SUB-VIEW: DRIVER EXPLORE (MAP) ==================== -->
+        <div id="sub-driver-explore" class="portal-subview w-full h-full flex overflow-hidden">
+          
+          <!-- Left Sidebar: Charger Search & Booking -->
+          <div class="w-[380px] border-r border-border-dark flex flex-col bg-gray-900/40 shrink-0">
+            <!-- Search header -->
+            <div class="p-5 border-b border-border-dark space-y-4">
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">search</span>
+                <input id="search-charger-input" type="text" class="w-full bg-gray-950/80 border border-gray-800 focus:border-primary focus:ring-1 focus:ring-primary rounded-full pl-10 pr-4 py-2.5 text-sm placeholder-gray-500 text-white" placeholder="Search by address or node..." oninput="filterChargerCards()">
+              </div>
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-gray-400 font-medium">Chargers Available</span>
+                <button class="text-primary font-bold hover:underline flex items-center gap-1" onclick="loadNearbyChargers()"><span class="material-symbols-outlined text-xs">refresh</span> Reload Nodes</button>
+              </div>
+            </div>
+
+            <!-- Charger Node Cards List -->
+            <div id="charger-cards-list" class="flex-grow overflow-y-auto p-4 space-y-3 custom-scrollbar">
+              <!-- Cards rendered dynamically -->
+              <div class="text-center py-8 text-gray-500 text-sm">Loading chargers near you...</div>
+            </div>
+
+            <!-- Booking panel drawer overlay inside sidebar (Hidden by default, shown when card clicked) -->
+            <div id="booking-drawer" class="border-t border-border-dark bg-gray-900 p-5 hidden">
+              <div class="flex justify-between items-start mb-4">
+                <div>
+                  <h3 id="drawer-title" class="font-heading font-bold text-white text-base">Oakwood Charging Node</h3>
+                  <p id="drawer-connector" class="text-xs text-gray-400">J1772 Connector • Level 2</p>
+                </div>
+                <button class="material-symbols-outlined text-gray-500 hover:text-white" onclick="closeBookingDrawer()">close</button>
+              </div>
+
+              <!-- Price section -->
+              <div class="bg-gray-950/80 rounded-xl p-3 border border-border-dark flex justify-between items-center mb-4">
+                <div>
+                  <span class="text-[10px] text-gray-400 block font-semibold uppercase tracking-wider">Standard Rate</span>
+                  <span id="drawer-standard-rate" class="text-white font-bold text-sm">$0.25 / kWh</span>
+                </div>
+                <div class="text-right">
+                  <span class="text-[10px] text-gray-400 block font-semibold uppercase tracking-wider">Peak Rate</span>
+                  <span id="drawer-peak-rate" class="text-primary-light font-bold text-sm">$0.35 / kWh</span>
+                </div>
+              </div>
+
+              <!-- Booking Form -->
+              <div class="space-y-3">
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Start Time</label>
+                    <input type="datetime-local" id="book-start" class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 text-xs text-white focus:border-primary">
+                  </div>
+                  <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">End Time</label>
+                    <input type="datetime-local" id="book-end" class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 text-xs text-white focus:border-primary" onchange="estimateBookingCost()">
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Energy Required (kWh)</label>
+                  <input type="number" id="book-kwh" value="30" class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 text-xs text-white focus:border-primary" onchange="estimateBookingCost()">
+                </div>
+
+                <div class="flex justify-between items-center text-xs py-2 border-t border-gray-800">
+                  <span class="text-gray-400">Estimated Price</span>
+                  <span id="book-est-price" class="text-white font-bold">$0.00</span>
+                </div>
+
+                <button id="btn-create-booking" class="w-full bg-primary hover:bg-primary-hover text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow-[0_4px_12px_rgba(16,185,129,0.2)]" onclick="submitBookingReservation()">
+                  Confirm & Reserve Spot
+                </button>
+              </div>
+            </div>
+
+            <!-- Booking Payment Overlay Checkout (Shown after reservation confirmed) -->
+            <div id="payment-checkout-drawer" class="border-t border-border-dark bg-gray-900 p-5 hidden">
+              <div class="flex justify-between items-start mb-4">
+                <h3 class="font-heading font-bold text-white text-base">Secure Checkout</h3>
+                <button class="material-symbols-outlined text-gray-500 hover:text-white" onclick="cancelPaymentCheckout()">close</button>
+              </div>
+
+              <!-- Booking summary card -->
+              <div class="bg-gray-950 p-4 rounded-xl border border-border-dark mb-4 space-y-2">
+                <div class="flex justify-between text-xs">
+                  <span class="text-gray-400">Booking ID</span>
+                  <span id="checkout-booking-id" class="text-white font-semibold font-mono truncate max-w-[150px]">UUID</span>
+                </div>
+                <div class="flex justify-between text-xs">
+                  <span class="text-gray-400">Allocated Energy</span>
+                  <span id="checkout-booking-kwh" class="text-white font-semibold">30 kWh</span>
+                </div>
+                <div class="flex justify-between text-xs font-bold border-t border-gray-800 pt-2 text-sm">
+                  <span class="text-gray-400">Total Price</span>
+                  <span id="checkout-booking-price" class="text-primary">$0.00</span>
+                </div>
+              </div>
+
+              <!-- Mock Credit Card Form -->
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Card Number</label>
+                  <input type="text" value="4242 •••• •••• 4242" disabled class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 text-xs text-gray-400 font-mono">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Expiry</label>
+                    <input type="text" value="12/28" disabled class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 text-xs text-gray-400 font-mono">
+                  </div>
+                  <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">CVV</label>
+                    <input type="text" value="***" disabled class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 text-xs text-gray-400 font-mono">
+                  </div>
+                </div>
+
+                <div class="text-[10px] text-gray-500 italic">
+                  💳 This checkout is simulated locally via mock Stripe Connect split payments.
+                </div>
+
+                <button id="btn-pay-booking" class="w-full bg-primary hover:bg-primary-hover text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow-[0_4px_12px_rgba(16,185,129,0.2)]" onclick="executeMockPayment()">
+                  Authorize Charge via Stripe
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Interactive Leaflet Map Canvas (62% width) -->
+          <div class="flex-grow relative h-full bg-gray-950" id="leaflet-map-container">
+            <!-- Map renders here -->
+          </div>
+
+        </div>
+
+        <!-- ==================== SUB-VIEW: DRIVER ACTIVITY ==================== -->
+        <div id="sub-driver-activity" class="portal-subview w-full h-full p-8 overflow-y-auto hidden custom-scrollbar">
+          <div class="max-w-5xl mx-auto space-y-8">
+            <div class="flex justify-between items-center">
+              <div>
+                <h3 class="font-heading text-2xl font-bold text-white">Your Charging History</h3>
+                <p class="text-sm text-gray-400">Track and manage your scheduled reservations and active charging sessions.</p>
+              </div>
+              <button class="bg-gray-850 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded-xl text-xs flex items-center gap-1.5 border border-gray-700" onclick="loadUserBookings()">
+                <span class="material-symbols-outlined text-sm">refresh</span> Refresh List
+              </button>
+            </div>
+
+            <!-- Active Charging Session Panel (Highlighted if present) -->
+            <div id="active-session-banner" class="hidden">
+              <!-- Rendered dynamically -->
+            </div>
+
+            <!-- Bookings List Table -->
+            <div class="bg-gray-900 border border-border-dark rounded-2xl overflow-hidden shadow-xl">
+              <table class="w-full text-left text-sm">
+                <thead class="bg-gray-950/60 font-heading text-gray-400 border-b border-border-dark uppercase text-[10px] tracking-wider">
+                  <tr>
+                    <th class="px-6 py-4">Booking ID</th>
+                    <th class="px-6 py-4">Charger Node</th>
+                    <th class="px-6 py-4">Start Time</th>
+                    <th class="px-6 py-4">End Time</th>
+                    <th class="px-6 py-4 text-center">Allocated</th>
+                    <th class="px-6 py-4 text-right">Price</th>
+                    <th class="px-6 py-4 text-center">Status</th>
+                    <th class="px-6 py-4 text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="driver-bookings-rows" class="divide-y divide-gray-800/60">
+                  <tr>
+                    <td colspan="8" class="text-center py-12 text-gray-500">No charging bookings found.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ==================== SUB-VIEW: HOST OVERVIEW ==================== -->
+        <div id="sub-host-overview" class="portal-subview w-full h-full p-8 overflow-y-auto hidden custom-scrollbar">
+          <div class="max-w-5xl mx-auto space-y-8">
+            <div>
+              <h3 class="font-heading text-2xl font-bold text-white">Host Metrics Center</h3>
+              <p class="text-sm text-gray-400">Lifetime charging metrics, aggregate earnings, and active station monitoring.</p>
+            </div>
+
+            <!-- Key Metric Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="glass-panel rounded-2xl p-6 relative overflow-hidden shadow-lg">
+                <div class="flex items-center justify-between mb-4">
+                  <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Lifetime Revenue</span>
+                  <span class="material-symbols-outlined text-primary bg-primary/10 p-2 rounded-xl">payments</span>
+                </div>
+                <h4 id="host-metric-revenue" class="text-3xl font-extrabold text-white font-heading">$0.00</h4>
+                <p class="text-xs text-gray-500 mt-2">10% Platform fee deducted at payout</p>
+              </div>
+
+              <div class="glass-panel rounded-2xl p-6 relative overflow-hidden shadow-lg">
+                <div class="flex items-center justify-between mb-4">
+                  <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Delivered Energy</span>
+                  <span class="material-symbols-outlined text-primary bg-primary/10 p-2 rounded-xl">bolt</span>
+                </div>
+                <h4 id="host-metric-kwh" class="text-3xl font-extrabold text-white font-heading">0.0 kWh</h4>
+                <p class="text-xs text-gray-500 mt-2">Calculated from completed sessions</p>
+              </div>
+
+              <div class="glass-panel rounded-2xl p-6 relative overflow-hidden shadow-lg">
+                <div class="flex items-center justify-between mb-4">
+                  <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Bookings Serviced</span>
+                  <span class="material-symbols-outlined text-primary bg-primary/10 p-2 rounded-xl">electric_car</span>
+                </div>
+                <h4 id="host-metric-bookings" class="text-3xl font-extrabold text-white font-heading">0</h4>
+                <p class="text-xs text-gray-500 mt-2">Active, confirmed and completed</p>
+              </div>
+            </div>
+
+            <!-- Host Active Station Panel -->
+            <div class="bg-gray-900 border border-border-dark rounded-2xl overflow-hidden shadow-xl p-6 space-y-4">
+              <h4 class="font-heading text-lg font-bold text-white">Active Charging Hardware Heartbeats</h4>
+              <p class="text-xs text-gray-400">View real-time heartbeats and capture signals generated by vehicles connecting to your host node.</p>
+              <div id="host-live-monitoring-box" class="bg-gray-950 p-4 rounded-xl border border-gray-800 font-mono text-xs text-gray-500 space-y-1 h-36 overflow-y-auto custom-scrollbar">
+                <div>[SYSTEM] Listening for telemetry webhook signals...</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ==================== SUB-VIEW: HOST CHARGERS ==================== -->
+        <div id="sub-host-chargers" class="portal-subview w-full h-full p-8 overflow-y-auto hidden custom-scrollbar">
+          <div class="max-w-5xl mx-auto space-y-8">
+            <div class="flex justify-between items-center">
+              <div>
+                <h3 class="font-heading text-2xl font-bold text-white">My Charging Station Nodes</h3>
+                <p class="text-sm text-gray-400">Register and configure your local charging hardware endpoints, price schedules and availability.</p>
+              </div>
+              <button class="bg-primary hover:bg-primary-hover text-white font-bold py-2.5 px-4 rounded-xl text-xs flex items-center gap-1.5 transition-all shadow-[0_4px_12px_rgba(16,185,129,0.2)]" onclick="openAddChargerModal()">
+                <span class="material-symbols-outlined text-sm">add</span> List Charger Node
+              </button>
+            </div>
+
+            <!-- Chargers grid -->
+            <div id="host-chargers-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Rendered dynamically -->
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ==================== SUB-VIEW: HOST WALLET ==================== -->
+        <div id="sub-host-wallet" class="portal-subview w-full h-full p-8 overflow-y-auto hidden custom-scrollbar">
+          <div class="max-w-3xl mx-auto space-y-8">
+            <div>
+              <h3 class="font-heading text-2xl font-bold text-white">Payouts & Wallet Balance</h3>
+              <p class="text-sm text-gray-400">Manage Stripe Connect onboarding and process merchant deposits.</p>
+            </div>
+
+            <!-- Stripe Connect Card -->
+            <div class="bg-gray-900 border border-border-dark rounded-2xl p-8 relative overflow-hidden shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div class="space-y-3">
+                <span class="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 border border-primary/20 px-3 py-1 rounded-full">Stripe Connect Integration</span>
+                <h4 class="font-heading text-xl font-bold text-white">Express Merchant Routing</h4>
+                <p class="text-sm text-gray-400 max-w-md leading-relaxed">
+                  To receive automated host payouts, link your checking account via secure Stripe Express onboarding link. Platform fee is 10% on charging receipts.
+                </p>
+              </div>
+              <div class="shrink-0">
+                <button id="btn-stripe-onboard" class="bg-white hover:bg-gray-100 text-gray-900 font-bold py-3 px-6 rounded-xl text-xs shadow-xl transition-all flex items-center gap-2" onclick="startStripeOnboarding()">
+                  <span class="material-symbols-outlined text-sm font-extrabold text-indigo-600">account_balance</span>
+                  Link stripe Account
+                </button>
+                <div id="stripe-status-label" class="text-xs text-center text-yellow-500 font-semibold mt-2">Unlinked: Onboarding Required</div>
+              </div>
+            </div>
+
+            <!-- Payout Statistics -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="glass-panel rounded-xl p-5 shadow-lg">
+                <span class="text-xs text-gray-400 block mb-1">Available Payout Balance</span>
+                <h5 class="text-2xl font-bold text-white font-heading" id="wallet-balance-payout">$0.00</h5>
+                <div class="h-px bg-gray-800 my-4"></div>
+                <button class="bg-primary/20 text-primary border border-primary/30 w-full hover:bg-primary/30 py-2 rounded-xl text-xs font-semibold" disabled>Request Instant Payout</button>
+              </div>
+              <div class="glass-panel rounded-xl p-5 shadow-lg">
+                <span class="text-xs text-gray-400 block mb-1">Pending Balance (Escrow)</span>
+                <h5 class="text-2xl font-bold text-gray-400 font-heading" id="wallet-balance-pending">$0.00</h5>
+                <div class="h-px bg-gray-800 my-4"></div>
+                <div class="text-[10px] text-gray-500">Transferred automatically 24h after charging session completed.</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ==================== SUB-VIEW: HOST ANALYTICS ==================== -->
+        <div id="sub-host-analytics" class="portal-subview w-full h-full p-8 overflow-y-auto hidden custom-scrollbar">
+          <div class="max-w-5xl mx-auto space-y-8">
+            <div>
+              <h3 class="font-heading text-2xl font-bold text-white">Revenue Analytics & Insights</h3>
+              <p class="text-sm text-gray-400">Monthly breakdowns, aggregate charging volume, and demand patterns.</p>
+            </div>
+
+            <!-- Graph Area -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div class="bg-gray-900 border border-border-dark p-6 rounded-2xl shadow-xl space-y-4">
+                <h4 class="font-heading text-base font-semibold text-white">Monthly Earnings Performance</h4>
+                <div class="h-64 relative">
+                  <canvas id="chart-monthly-revenue"></canvas>
+                </div>
+              </div>
+              <div class="bg-gray-900 border border-border-dark p-6 rounded-2xl shadow-xl space-y-4">
+                <h4 class="font-heading text-base font-semibold text-white">Power Volumetrics (kWh Delivered)</h4>
+                <div class="h-64 relative">
+                  <canvas id="chart-monthly-kwh"></canvas>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- ==================== DIALOG MODAL: ADD CHARGER NODE ==================== -->
+  <div id="modal-add-charger" class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-sm hidden">
+    <div class="bg-gray-900 border border-border-dark rounded-2xl w-full max-w-lg p-6 space-y-4 shadow-2xl relative">
+      <div class="flex justify-between items-start">
+        <h3 class="font-heading text-lg font-bold text-white">List New Charger Node</h3>
+        <button class="material-symbols-outlined text-gray-500 hover:text-white" onclick="closeAddChargerModal()">close</button>
+      </div>
+
+      <form id="form-add-charger" onsubmit="handleAddChargerSubmit(event)" class="space-y-4 text-xs">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-gray-400 mb-1 font-semibold">Latitude</label>
+            <input type="number" step="any" id="add-charger-lat" required class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2.5 text-white" placeholder="e.g. 37.7749">
+          </div>
+          <div>
+            <label class="block text-gray-400 mb-1 font-semibold">Longitude</label>
+            <input type="number" step="any" id="add-charger-lng" required class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2.5 text-white" placeholder="e.g. -122.4194">
+          </div>
+        </div>
+        
+        <div class="text-[10px] text-gray-500">
+          💡 Tip: You can double-click on the map in Driver Mode to quickly discover coordinates, or insert standard GPS values here.
+        </div>
+
+        <div>
+          <label class="block text-gray-400 mb-1 font-semibold">Connector Type</label>
+          <input type="text" id="add-charger-connector" required class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2.5 text-white" placeholder="e.g. CCS Combo 1 (Level 3 Supercharger)">
+        </div>
+
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="block text-gray-400 mb-1 font-semibold">Base Price ($/kWh)</label>
+            <input type="number" step="any" id="add-charger-price" required class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2.5 text-white" placeholder="0.25">
+          </div>
+          <div>
+            <label class="block text-gray-400 mb-1 font-semibold">Peak Price ($/kWh)</label>
+            <input type="number" step="any" id="add-charger-peak-price" class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2.5 text-white" placeholder="0.35">
+          </div>
+          <div>
+            <label class="block text-gray-400 mb-1 font-semibold">Off-Peak ($/kWh)</label>
+            <input type="number" step="any" id="add-charger-off-peak-price" class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2.5 text-white" placeholder="0.20">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-gray-400 mb-1.5 font-semibold">Select Peak Pricing Hours (UTC)</label>
+          <div class="grid grid-cols-6 gap-1 bg-gray-950 p-3 rounded-lg border border-gray-800" id="peak-hours-picker">
+            <!-- Hour boxes rendered dynamically by JS -->
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <input type="checkbox" id="add-charger-available" checked class="bg-gray-950 border-gray-850 rounded text-primary focus:ring-primary focus:ring-0">
+          <label class="text-gray-400 font-semibold">Available for Booking immediately</label>
+        </div>
+
+        <button type="submit" class="w-full bg-primary hover:bg-primary-hover text-white font-bold py-3 rounded-xl transition-all shadow-[0_4px_12px_rgba(16,185,129,0.2)]">
+          Publish Charging Station
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== DIALOG MODAL: STRIPE MOCK RETURN ONBOARDING ==================== -->
+  <div id="modal-stripe-onboarding-callback" class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-sm hidden">
+    <div class="bg-gray-900 border border-border-dark rounded-2xl w-full max-w-md p-8 text-center space-y-6 shadow-2xl relative">
+      <div class="w-16 h-16 bg-primary/10 border border-primary/30 rounded-full flex items-center justify-center text-primary mx-auto animate-bounce">
+        <span class="material-symbols-outlined text-4xl">check_circle</span>
+      </div>
+      <div>
+        <h3 class="font-heading text-xl font-bold text-white">Stripe Express Account Connected!</h3>
+        <p class="text-sm text-gray-400 mt-2">
+          Your merchant onboarding with Stripe Connect is complete. You can now publish chargers and collect split receipts.
+        </p>
+      </div>
+      <button class="bg-primary hover:bg-primary-hover w-full py-3 rounded-xl font-bold text-white" onclick="closeStripeOnboardingModal()">
+        Proceed to Host Dashboard
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== SYSTEM DIALOG MODAL: LIVE SESSION ANIMATED WIDGET ==================== -->
+  <div id="modal-live-session" class="fixed inset-0 z-[100] overflow-y-auto flex items-center justify-center p-4 bg-gray-950/90 backdrop-blur-md hidden">
+    <div class="bg-gray-900 border border-border-dark rounded-3xl w-full max-w-4xl p-8 shadow-2xl relative">
+      
+      <div class="flex justify-between items-start mb-6">
+        <div>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-primary/10 border border-primary/20 text-primary uppercase tracking-wider mb-2">
+            <span class="w-2 h-2 bg-primary rounded-full animate-ping"></span> Live Charging session
+          </span>
+          <h3 class="font-heading text-2xl font-bold text-white" id="live-session-charger-name">Charging Station Name</h3>
+          <p class="text-xs text-gray-400" id="live-session-id-display">Session ID: UUID</p>
+        </div>
+        <button class="material-symbols-outlined text-gray-500 hover:text-white" onclick="closeLiveSessionModal()">close</button>
+      </div>
+
+      <!-- Main simulator split screen -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center py-4 border-t border-b border-gray-800">
+        
+        <!-- Left Column: Battery state visualization -->
+        <div class="flex flex-col items-center justify-center space-y-4">
+          <div class="battery-container">
+            <div id="live-battery-fill" class="battery-fill"></div>
+          </div>
+          <div class="flex items-center gap-1 text-primary-light charging-bolt text-lg font-extrabold font-heading" id="live-bolt-container">
+            <span class="material-symbols-outlined text-2xl">bolt</span>
+            <span id="live-percentage">0% Charged</span>
+          </div>
+        </div>
+
+        <!-- Right Column: Heartbeat metrics and state values -->
+        <div class="space-y-4 text-sm">
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-gray-950 p-4 rounded-xl border border-gray-850">
+              <span class="text-[10px] text-gray-400 block font-semibold uppercase tracking-wider mb-1">Delivered Power</span>
+              <span id="live-power" class="text-white text-lg font-bold">0.0 kW</span>
+            </div>
+            <div class="bg-gray-950 p-4 rounded-xl border border-gray-850">
+              <span class="text-[10px] text-gray-400 block font-semibold uppercase tracking-wider mb-1">Accumulated Energy</span>
+              <span id="live-kwh" class="text-white text-lg font-bold">0.00 / 30.0 kWh</span>
+            </div>
+            <div class="bg-gray-950 p-4 rounded-xl border border-gray-850">
+              <span class="text-[10px] text-gray-400 block font-semibold uppercase tracking-wider mb-1">Charged Cost</span>
+              <span id="live-cost" class="text-primary text-lg font-bold">$0.00</span>
+            </div>
+            <div class="bg-gray-950 p-4 rounded-xl border border-gray-850">
+              <span class="text-[10px] text-gray-400 block font-semibold uppercase tracking-wider mb-1">Charge Status</span>
+              <span id="live-status" class="text-yellow-500 text-lg font-bold capitalize">Charging</span>
+            </div>
+          </div>
+
+          <!-- Telemetry Simulation Control Panel (Interact center) -->
+          <div class="bg-gray-950/80 p-5 rounded-2xl border border-border-dark space-y-3">
+            <h4 class="font-heading text-xs font-bold text-white uppercase tracking-wider">Hardware Telemetry Simulator</h4>
+            <p class="text-[10px] text-gray-500 leading-relaxed">
+              Click buttons below to generate signed webhooks simulating vehicle sensor telemetry packets.
+            </p>
+            <div class="grid grid-cols-2 gap-2">
+              <button id="btn-start-sim" class="bg-primary hover:bg-primary-hover text-white text-xs font-bold py-2 rounded-xl" onclick="toggleTelemetrySimLoop()">
+                Start Auto Charge Loop
+              </button>
+              <button id="btn-early-disconnect" class="bg-red-900/30 border border-red-500/20 hover:bg-red-900/50 text-red-400 text-xs font-bold py-2 rounded-xl" onclick="triggerEarlyDisconnectSim()">
+                Disconnect Charger Early
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Info footer -->
+      <div class="mt-6 flex justify-between text-xs text-gray-500">
+        <span>⚡ Hardware Webhook: /api/v1/emerald/telemetry/hardware-webhook</span>
+        <span>Secure encryption: HMAC-SHA256 signature enabled</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Javascript Modules -->
+  <script src="/js/api-connector.js"></script>
+  
+  <script>
+    // ==================== APP STATE AND GLOBAL DATA ====================
+    let map = null;
+    let mapMarkers = [];
+    let chargersList = [];
+    let currentAuthTab = 'login';
+    let activePortalTab = 'driver-explore';
+    let currentRole = 'driver';
+    let peakHoursSelected = [];
+    let selectedChargerForBooking = null;
+    let selectedBookingForCheckout = null;
+    let activeChargingSession = null;
+    let telemetryInterval = null;
+    let monthlyRevenueChart = null;
+    let monthlyKwhChart = null;
+
+    // Default center point for Map (e.g. Los Angeles)
+    const DEFAULT_MAP_CENTER = [34.0522, -118.2437];
+
+    // ==================== TOAST HELPER ====================
+    function notify(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.style.cssText = `
+        min-width: 280px;
+        max-width: 400px;
+        background: ${type === 'error' ? 'rgba(239, 68, 68, 0.95)' : type === 'success' ? 'rgba(16, 185, 129, 0.95)' : 'rgba(59, 130, 246, 0.95)'};
+        color: #ffffff;
+        font-family: 'Inter', sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 12px 18px;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transform: translateX(100px);
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: auto;
+      `;
+      toast.innerText = message;
+      container.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.transform = 'translateX(0)';
+        toast.style.opacity = '1';
+      }, 50);
+
+      setTimeout(() => {
+        toast.style.transform = 'translateX(100px)';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+
+    // Wrap showToast to override default connector logger alert
+    window.showToast = notify;
+
+    // ==================== ROUTING & VIEW CONTROLLERS ====================
+    window.addEventListener('DOMContentLoaded', () => {
+      // 1. Initialise State from localStorage
+      const token = localStorage.getItem('emerald_token');
+      const userStr = localStorage.getItem('emerald_user');
+      
+      if (token && userStr) {
+        try {
+          const user = JSON.parse(userStr);
+          document.getElementById('user-display-name').innerText = user.name;
+          document.getElementById('user-avatar-initial').innerText = user.name.charAt(0).toUpperCase();
+          document.getElementById('user-display-role').innerText = user.role;
+          currentRole = user.role;
+          
+          showPortalView();
+        } catch (e) {
+          handleLogout();
+        }
+      } else {
+        showLandingView();
+      }
+
+      // Initialize Peak Hours Picker in Host listing modal
+      initPeakHoursPicker();
+    });
+
+    function showLandingView() {
+      document.getElementById('view-landing').classList.add('active');
+      document.getElementById('view-landing').classList.remove('hidden');
+      document.getElementById('view-portal').classList.add('hidden');
+      document.getElementById('view-portal').classList.remove('active');
+    }
+
+    function showPortalView() {
+      document.getElementById('view-landing').classList.remove('active');
+      document.getElementById('view-landing').classList.add('hidden');
+      document.getElementById('view-portal').classList.add('active');
+      document.getElementById('view-portal').classList.remove('hidden');
+
+      // Update Nav menu states
+      setUserRole(currentRole);
+      
+      // Auto-load subviews depending on active tab
+      switchPortalTab(activePortalTab);
+    }
+
+    function switchAuthTab(tab) {
+      currentAuthTab = tab;
+      if (tab === 'login') {
+        document.getElementById('tab-login').className = "flex-1 py-2 text-sm font-semibold rounded-lg bg-primary text-white shadow transition-all";
+        document.getElementById('tab-register').className = "flex-1 py-2 text-sm font-semibold rounded-lg text-gray-400 hover:text-white transition-all";
+        document.getElementById('form-login').classList.remove('hidden');
+        document.getElementById('form-register').classList.add('hidden');
+      } else {
+        document.getElementById('tab-register').className = "flex-1 py-2 text-sm font-semibold rounded-lg bg-primary text-white shadow transition-all";
+        document.getElementById('tab-login').className = "flex-1 py-2 text-sm font-semibold rounded-lg text-gray-400 hover:text-white transition-all";
+        document.getElementById('form-register').classList.remove('hidden');
+        document.getElementById('form-login').classList.add('hidden');
+      }
+    }
+
+    function setUserRole(role) {
+      currentRole = role;
+      
+      const isDriver = role === 'driver';
+      
+      // Toggle button highlights
+      document.getElementById('toggle-role-driver').className = isDriver 
+        ? "px-4 py-1.5 rounded-full text-xs font-semibold bg-primary text-white shadow-sm transition-all"
+        : "px-4 py-1.5 rounded-full text-xs font-semibold text-gray-400 hover:text-white transition-all";
+        
+      document.getElementById('toggle-role-host').className = !isDriver 
+        ? "px-4 py-1.5 rounded-full text-xs font-semibold bg-primary text-white shadow-sm transition-all"
+        : "px-4 py-1.5 rounded-full text-xs font-semibold text-gray-400 hover:text-white transition-all";
+
+      // Toggle nav drawer sections
+      if (isDriver) {
+        document.getElementById('menu-driver-section').classList.remove('hidden');
+        document.getElementById('menu-host-section').classList.add('hidden');
+        switchPortalTab('driver-explore');
+      } else {
+        document.getElementById('menu-driver-section').classList.add('hidden');
+        document.getElementById('menu-host-section').classList.remove('hidden');
+        switchPortalTab('host-overview');
+      }
+    }
+
+    function switchPortalTab(tabId) {
+      activePortalTab = tabId;
+      
+      // Update subview layouts
+      document.querySelectorAll('.portal-subview').forEach(view => view.classList.add('hidden'));
+      document.getElementById(`sub-${tabId}`).classList.remove('hidden');
+
+      // Update Nav active classes
+      document.querySelectorAll('aside nav button').forEach(btn => btn.classList.remove('active-nav-item'));
+      const activeNav = document.getElementById(`nav-${tabId}`);
+      if (activeNav) activeNav.classList.add('active-nav-item');
+
+      // Update title
+      const titleMapping = {
+        'driver-explore': 'Explore Charging Nodes',
+        'driver-activity': 'My Charging Sessions',
+        'host-overview': 'Host Metrics Overview',
+        'host-chargers': 'Configure Charger Listings',
+        'host-wallet': 'Deposit Payouts & Wallet',
+        'host-analytics': 'Monthly Revenue Graphs'
+      };
+      document.getElementById('portal-view-title').innerText = titleMapping[tabId] || 'Emerald Platform';
+
+      // Load data dynamically depending on view
+      if (tabId === 'driver-explore') {
+        initializeMap();
+      } else if (tabId === 'driver-activity') {
+        loadUserBookings();
+      } else if (tabId === 'host-overview') {
+        loadHostDashboardData();
+      } else if (tabId === 'host-chargers') {
+        loadHostChargers();
+      } else if (tabId === 'host-wallet') {
+        loadHostWalletDetails();
+      } else if (tabId === 'host-analytics') {
+        renderAnalyticsCharts();
+      }
+    }
+
+    // ==================== AUTH CONTROLLERS ====================
+    async function handleAuthSubmit(event, action) {
+      event.preventDefault();
+      
+      let url = '/api/v1/emerald/auth/login';
+      let payload = {};
+
+      if (action === 'login') {
+        payload = {
+          email: document.getElementById('login-email').value,
+          password: document.getElementById('login-password').value
+        };
+      } else {
+        url = '/api/v1/emerald/auth/register';
+        payload = {
+          name: document.getElementById('register-name').value,
+          email: document.getElementById('register-email').value,
+          password: document.getElementById('register-password').value,
+          role: document.getElementById('register-role').value
+        };
+      }
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || 'Authentication attempt failed');
+        }
+
+        // Save token & user
+        localStorage.setItem('emerald_token', data.token);
+        localStorage.setItem('emerald_user', JSON.stringify(data.user));
+        
+        document.getElementById('user-display-name').innerText = data.user.name;
+        document.getElementById('user-avatar-initial').innerText = data.user.name.charAt(0).toUpperCase();
+        document.getElementById('user-display-role').innerText = data.user.role;
+        currentRole = data.user.role;
+
+        notify(action === 'login' ? 'Signed in successfully!' : 'Registration complete! Welcome to Emerald.', 'success');
+        showPortalView();
+      } catch (error) {
+        notify(error.message, 'error');
+      }
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('emerald_token');
+      localStorage.removeItem('emerald_user');
+      notify('Logged out of platform safely.', 'info');
+      showLandingView();
+    }
+
+    // ==================== MAP INTEGRATION ====================
+    function initializeMap() {
+      if (map) return; // Already initialized
+
+      setTimeout(() => {
+        // Init Leaflet Map centering default center
+        map = L.map('leaflet-map-container', {
+          zoomControl: false
+        }).setView(DEFAULT_MAP_CENTER, 12);
+
+        // Standard dark tiles layout (Premium styled)
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+          attribution: '&copy; OpenStreetMap &copy; CartoDB',
+          subdomains: 'abcd',
+          maxZoom: 20
+        }).addTo(map);
+
+        // Add Zoom Control at bottom right
+        L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+        // Double click listener to fetch coordinates for new hosts listings
+        map.on('dblclick', (e) => {
+          if (currentRole === 'host') {
+            openAddChargerModal();
+            document.getElementById('add-charger-lat').value = e.latlng.lat.toFixed(6);
+            document.getElementById('add-charger-lng').value = e.latlng.lng.toFixed(6);
+            notify(`Selected map coords: ${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`, 'info');
+          }
+        });
+
+        // Load charger pins
+        loadNearbyChargers();
+      }, 200);
+    }
+
+    async function loadNearbyChargers() {
+      if (!map) return;
+      
+      const center = map.getCenter();
+      
+      try {
+        const token = localStorage.getItem('emerald_token');
+        const res = await fetch(`/api/v1/emerald/chargers?lat=${center.lat}&lng=${center.lng}&radius=50`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+
+        chargersList = data.chargers || [];
+        renderChargerPinsOnMap();
+        renderChargerCardsList();
+      } catch (e) {
+        notify('Failed to load charging station nodes: ' + e.message, 'error');
+      }
+    }
+
+    function renderChargerPinsOnMap() {
+      // Clear current markers
+      mapMarkers.forEach(m => map.removeLayer(m));
+      mapMarkers = [];
+
+      // Custom green marker icon
+      const greenIcon = L.divIcon({
+        className: 'custom-div-icon',
+        html: `<div class="pulse-pin w-8 h-8 rounded-full bg-primary/20 border-2 border-primary flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.5)]">
+                 <span class="material-symbols-outlined text-white text-base">ev_station</span>
+               </div>`,
+        iconSize: [32, 32],
+        iconAnchor: [16, 16]
+      });
+
+      chargersList.forEach(charger => {
+        const marker = L.marker([charger.lat, charger.lng], { icon: greenIcon }).addTo(map);
+        
+        // Popup trigger on click
+        marker.bindPopup(`
+          <div class="p-2 space-y-1 font-sans text-xs text-gray-800">
+            <h5 class="font-bold text-sm text-gray-900">${charger.connector_type}</h5>
+            <p class="text-gray-600">Rate: <b>$${Number(charger.price_per_kwh).toFixed(2)}/kWh</b></p>
+            <button class="bg-primary text-white px-3 py-1.5 rounded-lg font-bold hover:bg-primary-hover mt-1 cursor-pointer w-full text-center" onclick="window.selectChargerFromMap('${charger.id}')">Book Charger</button>
+          </div>
+        `);
+
+        mapMarkers.push(marker);
+      });
+    }
+
+    function renderChargerCardsList() {
+      const container = document.getElementById('charger-cards-list');
+      container.innerHTML = '';
+
+      if (chargersList.length === 0) {
+        container.innerHTML = `<div class="text-center py-8 text-gray-500 text-sm">No active charger nodes found near map center. Try scrolling map.</div>`;
+        return;
+      }
+
+      chargersList.forEach(charger => {
+        const card = document.createElement('div');
+        card.className = "bg-gray-850/60 border border-gray-800/80 rounded-xl p-4 hover:border-primary/40 transition-all cursor-pointer space-y-3";
+        card.onclick = () => selectChargerFromList(charger);
+        card.id = `charger-card-${charger.id}`;
+        
+        card.innerHTML = `
+          <div class="flex justify-between items-start">
+            <div class="space-y-1">
+              <h4 class="font-heading font-bold text-white text-sm">${charger.connector_type}</h4>
+              <p class="text-[10px] text-gray-400 font-mono truncate max-w-[180px]">ID: ${charger.id}</p>
+            </div>
+            <span class="text-primary font-bold text-xs bg-primary/10 border border-primary/20 px-2.5 py-1 rounded-full">$${Number(charger.price_per_kwh).toFixed(2)}/kWh</span>
+          </div>
+          <div class="flex justify-between items-center text-xs text-gray-400">
+            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">near_me</span> ${(charger.distance_km || 0).toFixed(2)} km away</span>
+            <span class="flex items-center gap-0.5 text-primary"><span class="w-1.5 h-1.5 bg-primary rounded-full mr-1"></span> Available</span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterChargerCards() {
+      const q = document.getElementById('search-charger-input').value.toLowerCase();
+      chargersList.forEach(c => {
+        const card = document.getElementById(`charger-card-${c.id}`);
+        if (!card) return;
+        const text = (c.connector_type + c.id).toLowerCase();
+        if (text.includes(q)) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    }
+
+    // Global mapping hook to trigger popup selects
+    window.selectChargerFromMap = (id) => {
+      const charger = chargersList.find(c => c.id === id);
+      if (charger) selectChargerFromList(charger);
+    };
+
+    function selectChargerFromList(charger) {
+      selectedChargerForBooking = charger;
+      
+      // Outline selected card in list
+      document.querySelectorAll('[id^="charger-card-"]').forEach(c => c.classList.remove('border-primary'));
+      const activeCard = document.getElementById(`charger-card-${charger.id}`);
+      if (activeCard) activeCard.classList.add('border-primary');
+
+      // Populate booking drawer info
+      document.getElementById('drawer-title').innerText = `Charger: ${charger.connector_type.split('(')[0]}`;
+      document.getElementById('drawer-connector').innerText = charger.connector_type;
+      
+      // Check for peak pricing properties (if returned by server)
+      const base = Number(charger.price_per_kwh).toFixed(2);
+      const peak = charger.peak_price_per_kwh ? Number(charger.peak_price_per_kwh).toFixed(2) : base;
+      const offPeak = charger.off_peak_price_per_kwh ? Number(charger.off_peak_price_per_kwh).toFixed(2) : base;
+      
+      document.getElementById('drawer-standard-rate').innerText = `$${base}/kWh`;
+      document.getElementById('drawer-peak-rate').innerText = `$${peak}/kWh`;
+
+      // Set default times (start now, end +2 hours)
+      const startInput = document.getElementById('book-start');
+      const endInput = document.getElementById('book-end');
+      
+      const now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      startInput.value = now.toISOString().slice(0, 16);
+      
+      const end = new Date();
+      end.setHours(end.getHours() + 2);
+      end.setMinutes(end.getMinutes() - end.getTimezoneOffset());
+      endInput.value = end.toISOString().slice(0, 16);
+
+      // Open booking panel
+      document.getElementById('booking-drawer').classList.remove('hidden');
+      document.getElementById('payment-checkout-drawer').classList.add('hidden');
+      
+      estimateBookingCost();
+    }
+
+    function closeBookingDrawer() {
+      document.getElementById('booking-drawer').classList.add('hidden');
+    }
+
+    function estimateBookingCost() {
+      if (!selectedChargerForBooking) return;
+      
+      const base = Number(selectedChargerForBooking.price_per_kwh);
+      const kwh = Number(document.getElementById('book-kwh').value || 30);
+      
+      const start = new Date(document.getElementById('book-start').value);
+      const end = new Date(document.getElementById('book-end').value);
+      
+      const durationMs = end - start;
+      if (isNaN(durationMs) || durationMs <= 0) {
+        document.getElementById('book-est-price').innerText = '$0.00';
+        return;
+      }
+
+      // Pro-rate estimation: simple approximation base rate * kwh for frontend display
+      const total = base * kwh;
+      document.getElementById('book-est-price').innerText = `$${total.toFixed(2)}`;
+    }
+
+    // ==================== BOOKING & PAYMENT FLOW ====================
+    async function submitBookingReservation() {
+      if (!selectedChargerForBooking) return;
+      
+      const start = new Date(document.getElementById('book-start').value).toISOString();
+      const end = new Date(document.getElementById('book-end').value).toISOString();
+      const kwh = Number(document.getElementById('book-kwh').value);
+
+      try {
+        const token = localStorage.getItem('emerald_token');
+        const res = await fetch('/api/v1/emerald/bookings', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            charger_id: selectedChargerForBooking.id,
+            start_time: start,
+            end_time: end,
+            total_kwh: kwh
+          })
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+
+        // Reservation success! Show Stripe payment drawer
+        selectedBookingForCheckout = data.booking;
+        notify('Reservation confirmed on grid. Ready to authorize payment.', 'success');
+
+        // Populate Checkout info
+        document.getElementById('checkout-booking-id').innerText = data.booking.id;
+        document.getElementById('checkout-booking-kwh').innerText = `${Number(data.booking.total_kwh).toFixed(1)} kWh`;
+        document.getElementById('checkout-booking-price').innerText = `$${Number(data.booking.total_price).toFixed(2)}`;
+
+        document.getElementById('booking-drawer').classList.add('hidden');
+        document.getElementById('payment-checkout-drawer').classList.remove('hidden');
+      } catch (e) {
+        notify('Booking reservation failed: ' + e.message, 'error');
+      }
+    }
+
+    function cancelPaymentCheckout() {
+      document.getElementById('payment-checkout-drawer').classList.add('hidden');
+    }
+
+    async function executeMockPayment() {
+      if (!selectedBookingForCheckout) return;
+
+      try {
+        const token = localStorage.getItem('emerald_token');
+        notify('Initiating payment checkout session...', 'info');
+
+        // 1. Create PaymentIntent via backend
+        const intentRes = await fetch('/api/v1/emerald/payments/create-intent', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ booking_id: selectedBookingForCheckout.id })
+        });
+
+        const intentData = await intentRes.json();
+        if (!intentRes.ok) throw new Error(intentData.error);
+
+        const paymentIntentId = intentData.payment_intent_id;
+
+        // 2. Dispatch simulated Stripe Success Webhook payload to the webhook endpoint
+        notify('Authorizing charges via secure Stripe escrow...', 'info');
+        
+        const webhookRes = await fetch('/api/v1/emerald/payments/webhook', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'stripe-signature': 'simulated_signature_bypass'
+          },
+          body: JSON.stringify({
+            type: 'payment_intent.succeeded',
+            data: {
+              object: {
+                id: paymentIntentId,
+                metadata: { booking_id: selectedBookingForCheckout.id }
+              }
+            }
+          })
+        });
+
+        if (!webhookRes.ok) throw new Error('Stripe transaction settlement webhook failed.');
+
+        notify('Transaction succeeded! Funds captured in escrow.', 'success');
+        document.getElementById('payment-checkout-drawer').classList.add('hidden');
+
+        // Refresh and switch to charging activity view
+        switchPortalTab('driver-activity');
+      } catch (e) {
+        notify('Stripe checkout error: ' + e.message, 'error');
+      }
+    }
+
+    // ==================== DRIVER ACTIVITY & REALTIME TELEMETRY SIMULATOR ====================
+    let userBookingsList = [];
+    async function loadUserBookings() {
+      try {
+        const token = localStorage.getItem('emerald_token');
+        const res = await fetch('/api/v1/emerald/bookings', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+
+        userBookingsList = data.bookings || [];
+        renderBookingsTable();
+
+        // Check if there is an active session booking (confirmed, paid, completed)
+        // If there's a booking in 'paid' status, show a sticky live charging session banner!
+        const activeBooking = userBookingsList.find(b => b.status === 'paid');
+        const bannerContainer = document.getElementById('active-session-banner');
+        
+        if (activeBooking) {
+          bannerContainer.className = "bg-primary/10 border border-primary/20 rounded-2xl p-6 relative overflow-hidden shadow-xl flex items-center justify-between";
+          bannerContainer.innerHTML = `
+            <div class="space-y-1">
+              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-primary/20 text-primary uppercase tracking-wider">Ready to Charge</span>
+              <h4 class="font-heading font-bold text-white text-base">You have an active paid charging reservation!</h4>
+              <p class="text-xs text-gray-400">Node ID: ${activeBooking.charger_id} • kWh Target: ${Number(activeBooking.total_kwh).toFixed(1)} kWh</p>
+            </div>
+            <button class="bg-primary hover:bg-primary-hover text-white font-bold py-2.5 px-5 rounded-xl text-xs shadow-lg transition-all" onclick="openLiveSessionWidget('${activeBooking.id}')">
+              Connect vehicle & Launch
+            </button>
+          `;
+        } else {
+          bannerContainer.className = "hidden";
+        }
+      } catch (e) {
+        notify('Failed to load bookings: ' + e.message, 'error');
+      }
+    }
+
+    function renderBookingsTable() {
+      const tbody = document.getElementById('driver-bookings-rows');
+      tbody.innerHTML = '';
+
+      if (userBookingsList.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-12 text-gray-500">No charging reservations found.</td></tr>`;
+        return;
+      }
+
+      userBookingsList.forEach(booking => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-gray-900/40 transition-colors";
+        
+        const dateOpt = { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+        const startStr = new Date(booking.start_time).toLocaleDateString('en-US', dateOpt);
+        const endStr = new Date(booking.end_time).toLocaleDateString('en-US', dateOpt);
+        
+        // Status Badge Style
+        let statusBadge = '';
+        if (booking.status === 'confirmed') statusBadge = '<span class="bg-blue-900/30 text-blue-400 px-2.5 py-1 border border-blue-500/10 rounded-full text-xs font-semibold">Reserved</span>';
+        else if (booking.status === 'paid') statusBadge = '<span class="bg-yellow-900/30 text-yellow-400 px-2.5 py-1 border border-yellow-500/10 rounded-full text-xs font-semibold">Paid</span>';
+        else if (booking.status === 'completed') statusBadge = '<span class="bg-primary/20 text-primary px-2.5 py-1 border border-primary/10 rounded-full text-xs font-semibold">Completed</span>';
+        else statusBadge = `<span class="bg-gray-800 text-gray-400 px-2.5 py-1 border border-gray-700 rounded-full text-xs font-semibold capitalize">${booking.status}</span>`;
+
+        let actionBtn = '-';
+        if (booking.status === 'paid') {
+          actionBtn = `<button class="bg-primary/20 text-primary border border-primary/30 hover:bg-primary/30 px-3 py-1 rounded-xl text-xs font-bold transition-all" onclick="openLiveSessionWidget('${booking.id}')">Charge</button>`;
+        } else if (booking.status === 'completed') {
+          actionBtn = `<button class="bg-gray-800 hover:bg-gray-750 text-gray-300 px-3 py-1 rounded-xl text-xs font-bold transition-all border border-gray-700" onclick="openLiveSessionWidget('${booking.id}')">View Invoice</button>`;
+        }
+
+        tr.innerHTML = `
+          <td class="px-6 py-4 font-mono text-[10px] text-gray-400 truncate max-w-[120px]">${booking.id}</td>
+          <td class="px-6 py-4 font-heading font-semibold text-white truncate max-w-[120px]">${booking.charger_id}</td>
+          <td class="px-6 py-4 text-xs text-gray-300">${startStr}</td>
+          <td class="px-6 py-4 text-xs text-gray-300">${endStr}</td>
+          <td class="px-6 py-4 text-center text-xs font-bold text-gray-200">${Number(booking.total_kwh).toFixed(1)} kWh</td>
+          <td class="px-6 py-4 text-right text-xs font-bold text-primary">$${Number(booking.total_price).toFixed(2)}</td>
+          <td class="px-6 py-4 text-center">${statusBadge}</td>
+          <td class="px-6 py-4 text-center">${actionBtn}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openLiveSessionWidget(bookingId) {
+      const booking = userBookingsList.find(b => b.id === bookingId);
+      if (!booking) return;
+
+      activeChargingSession = {
+        booking: booking,
+        accumulated_kwh: booking.status === 'completed' ? Number(booking.total_kwh) : 0,
+        current_power_kw: booking.status === 'completed' ? 0 : 7.2 // Default Level 2 KW charging rate
+      };
+
+      document.getElementById('live-session-charger-name').innerText = `Charging Node Slot`;
+      document.getElementById('live-session-id-display').innerText = `Session ID: ${booking.id}`;
+      
+      // Initial render updates
+      updateLiveSessionUI();
+
+      // Control buttons enable
+      const autoChargeBtn = document.getElementById('btn-start-sim');
+      const earlyDiscBtn = document.getElementById('btn-early-disconnect');
+      
+      if (booking.status === 'completed') {
+        autoChargeBtn.innerText = "Session Completed";
+        autoChargeBtn.disabled = true;
+        earlyDiscBtn.disabled = true;
+        document.getElementById('live-status').innerText = 'Completed';
+        document.getElementById('live-status').className = 'text-primary text-lg font-bold';
+      } else {
+        autoChargeBtn.innerText = "Start Auto Charge Loop";
+        autoChargeBtn.disabled = false;
+        earlyDiscBtn.disabled = false;
+        document.getElementById('live-status').innerText = 'Vehicle Connected';
+        document.getElementById('live-status').className = 'text-yellow-500 text-lg font-bold';
+      }
+
+      document.getElementById('modal-live-session').classList.remove('hidden');
+    }
+
+    function closeLiveSessionModal() {
+      // Clear simulation interval if active
+      if (telemetryInterval) {
+        clearInterval(telemetryInterval);
+        telemetryInterval = null;
+      }
+      document.getElementById('modal-live-session').classList.add('hidden');
+    }
+
+    function updateLiveSessionUI() {
+      if (!activeChargingSession) return;
+
+      const target = Number(activeChargingSession.booking.total_kwh);
+      const current = activeChargingSession.accumulated_kwh;
+      
+      const pct = Math.min(Math.round((current / target) * 100), 100);
+      
+      // Update battery animation height
+      document.getElementById('live-battery-fill').style.height = `${pct}%`;
+      document.getElementById('live-percentage').innerText = `${pct}% Charged`;
+      
+      document.getElementById('live-power').innerText = `${activeChargingSession.current_power_kw.toFixed(1)} kW`;
+      document.getElementById('live-kwh').innerText = `${current.toFixed(2)} / ${target.toFixed(1)} kWh`;
+      
+      // Pro-rated cost
+      const basePrice = Number(activeChargingSession.booking.total_price);
+      const cost = Math.min((current / target) * basePrice, basePrice);
+      document.getElementById('live-cost').innerText = `$${cost.toFixed(2)}`;
+    }
+
+    async function toggleTelemetrySimLoop() {
+      if (!activeChargingSession) return;
+      
+      const button = document.getElementById('btn-start-sim');
+      
+      if (telemetryInterval) {
+        // Stop Loop
+        clearInterval(telemetryInterval);
+        telemetryInterval = null;
+        button.innerText = "Resume Charge Loop";
+        document.getElementById('live-status').innerText = 'Suspended';
+        return;
+      }
+
+      button.innerText = "Charging... (Click to Pause)";
+      document.getElementById('live-status').innerText = 'Charging';
+      document.getElementById('live-status').className = 'text-primary-light text-lg font-bold';
+
+      const targetKwh = Number(activeChargingSession.booking.total_kwh);
+      
+      telemetryInterval = setInterval(async () => {
+        // Add energy increment
+        activeChargingSession.accumulated_kwh += 1.5;
+        
+        if (activeChargingSession.accumulated_kwh >= targetKwh) {
+          activeChargingSession.accumulated_kwh = targetKwh;
+          activeChargingSession.current_power_kw = 0;
+          
+          clearInterval(telemetryInterval);
+          telemetryInterval = null;
+          
+          // Trigger final webhook call to finalize payment & database status
+          await submitTelemetryHeartbeat(true);
+        } else {
+          // Standard heartbeat update
+          await submitTelemetryHeartbeat(false);
+        }
+        
+        updateLiveSessionUI();
+      }, 2000);
+    }
+
+    async function triggerEarlyDisconnectSim() {
+      if (!activeChargingSession) return;
+
+      if (telemetryInterval) {
+        clearInterval(telemetryInterval);
+        telemetryInterval = null;
+      }
+
+      notify('Unplugging vehicle connector. Settle pro-rated invoice...', 'info');
+      activeChargingSession.current_power_kw = 0;
+      updateLiveSessionUI();
+
+      // Trigger early disconnect signature webhook
+      await submitTelemetryHeartbeat(true, 'charger_disconnected');
+    }
+
+    async function submitTelemetryHeartbeat(isEnd = false, event = null) {
+      if (!activeChargingSession) return;
+
+      try {
+        const token = localStorage.getItem('emerald_token');
+        const payload = {
+          booking_id: activeChargingSession.booking.id,
+          current_power_kw: activeChargingSession.current_power_kw,
+          accumulated_kwh: activeChargingSession.accumulated_kwh
+        };
+
+        if (event) {
+          payload.event = event;
+        } else if (isEnd) {
+          // If we naturally hit the target kWh, also finalize
+          payload.event = 'charging_limit_reached';
+        }
+
+        const res = await fetch('/api/v1/emerald/telemetry/simulate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+
+        // Append log to host overview dashboard if host active listening console exists
+        const hostConsole = document.getElementById('host-live-monitoring-box');
+        if (hostConsole) {
+          const log = document.createElement('div');
+          log.className = "text-[10px] text-green-400";
+          log.innerText = `[${new Date().toLocaleTimeString()}] TELEMETRY Heartbeat: Booking ${payload.booking_id.slice(0,8)}... Coords update: ${payload.accumulated_kwh.toFixed(2)} kWh. Status: ${data.status || 'OK'}`;
+          hostConsole.appendChild(log);
+          hostConsole.scrollTop = hostConsole.scrollHeight;
+        }
+
+        if (isEnd) {
+          notify('Charging session concluded. Payment intent finalized on Stripe.', 'success');
+          document.getElementById('live-status').innerText = 'Completed';
+          document.getElementById('live-status').className = 'text-primary text-lg font-bold';
+          
+          document.getElementById('btn-start-sim').innerText = "Session Completed";
+          document.getElementById('btn-start-sim').disabled = true;
+          document.getElementById('btn-early-disconnect').disabled = true;
+          
+          // Refresh table data
+          loadUserBookings();
+        }
+      } catch (e) {
+        notify('Telemetry dispatch failure: ' + e.message, 'error');
+      }
+    }
+
+    // ==================== HOST DASHBOARD CONTROLLERS ====================
+    let hostMetrics = null;
+    async function loadHostDashboardData() {
+      try {
+        const token = localStorage.getItem('emerald_token');
+        const res = await fetch('/api/v1/emerald/hosts/earnings', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+
+        hostMetrics = data;
+        
+        // Render Metric Counters
+        document.getElementById('host-metric-revenue').innerText = `$${Number(data.summary.lifetime_revenue).toFixed(2)}`;
+        document.getElementById('host-metric-kwh').innerText = `${Number(data.summary.lifetime_kwh_delivered).toFixed(1)} kWh`;
+        document.getElementById('host-metric-bookings').innerText = data.summary.lifetime_bookings;
+      } catch (e) {
+        notify('Failed to load host dashboard details: ' + e.message, 'error');
+      }
+    }
+
+    let hostChargersList = [];
+    async function loadHostChargers() {
+      try {
+        const token = localStorage.getItem('emerald_token');
+        const res = await fetch('/api/v1/emerald/bookings', { // To verify active hosts bookings
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        // Fetch chargers (For listing host's chargers, we filter local coordinates list for simplicity)
+        const center = DEFAULT_MAP_CENTER; // Center queries
+        const chargerRes = await fetch(`/api/v1/emerald/chargers?lat=${center[0]}&lng=${center[1]}&radius=1000`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        const cData = await chargerRes.json();
+        if (!chargerRes.ok) throw new Error(cData.error);
+        
+        // Render host chargers
+        const hostUser = JSON.parse(localStorage.getItem('emerald_user'));
+        hostChargersList = (cData.chargers || []).filter(c => c.host_id === hostUser.id);
+        
+        renderHostChargersGrid();
+      } catch (e) {
+        notify('Failed to load host charger nodes: ' + e.message, 'error');
+      }
+    }
+
+    function renderHostChargersGrid() {
+      const grid = document.getElementById('host-chargers-grid');
+      grid.innerHTML = '';
+
+      if (hostChargersList.length === 0) {
+        grid.innerHTML = `<div class="col-span-2 text-center py-12 text-gray-500">You have no listed charging stations. Click 'List Charger Node' to set up pricing.</div>`;
+        return;
+      }
+
+      hostChargersList.forEach(charger => {
+        const card = document.createElement('div');
+        card.className = "bg-gray-900 border border-border-dark p-6 rounded-2xl shadow-xl space-y-4";
+        
+        card.innerHTML = `
+          <div class="flex justify-between items-start">
+            <div class="space-y-1">
+              <h4 class="font-heading font-bold text-white text-base">${charger.connector_type}</h4>
+              <p class="text-xs text-gray-400 font-mono">Coords: ${charger.lat.toFixed(5)}, ${charger.lng.toFixed(5)}</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold ${charger.is_available ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-red-900/10 text-red-400 border border-red-500/20'}">
+                ${charger.is_available ? 'Active' : 'Offline'}
+              </span>
+            </div>
+          </div>
+
+          <div class="h-px bg-gray-800"></div>
+
+          <div class="grid grid-cols-3 gap-2 text-xs">
+            <div class="bg-gray-950 p-2.5 rounded-lg border border-gray-850">
+              <span class="text-[9px] text-gray-500 uppercase block font-semibold">Base Rate</span>
+              <span class="text-white font-bold">$${Number(charger.price_per_kwh).toFixed(2)}/kWh</span>
+            </div>
+            <div class="bg-gray-950 p-2.5 rounded-lg border border-gray-850">
+              <span class="text-[9px] text-gray-500 uppercase block font-semibold">Peak Rate</span>
+              <span class="text-primary-light font-bold">$${Number(charger.peak_price_per_kwh || charger.price_per_kwh).toFixed(2)}/kWh</span>
+            </div>
+            <div class="bg-gray-950 p-2.5 rounded-lg border border-gray-850">
+              <span class="text-[9px] text-gray-500 uppercase block font-semibold">Off-Peak</span>
+              <span class="text-gray-400 font-bold">$${Number(charger.off_peak_price_per_kwh || charger.price_per_kwh).toFixed(2)}/kWh</span>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button class="bg-gray-800 text-gray-300 text-xs font-semibold py-2 px-4 rounded-xl border border-gray-700 hover:bg-gray-750 transition-all flex-grow" onclick="toggleChargerAvailability('${charger.id}', ${charger.is_available})">
+              ${charger.is_available ? 'Put Offline' : 'Put Active'}
+            </button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    async function toggleChargerAvailability(id, currentStatus) {
+      try {
+        const token = localStorage.getItem('emerald_token');
+        const res = await fetch(`/api/v1/emerald/chargers/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ is_available: !currentStatus })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+
+        notify('Charger status updated successfully.', 'success');
+        loadHostChargers();
+      } catch (e) {
+        notify('Failed to toggle availability: ' + e.message, 'error');
+      }
+    }
+
+    // Peak hours multiselect builder
+    function initPeakHoursPicker() {
+      const picker = document.getElementById('peak-hours-picker');
+      picker.innerHTML = '';
+      
+      for (let h = 0; h < 24; h++) {
+        const label = h.toString().padStart(2, '0') + ':00';
+        const checkbox = document.createElement('div');
+        checkbox.className = "flex items-center justify-center p-2 border border-gray-800 rounded-lg text-center cursor-pointer text-[10px] font-mono hover:border-primary transition-all text-gray-400 select-none";
+        checkbox.innerText = label;
+        checkbox.id = `peak-hour-checkbox-${h}`;
+        checkbox.onclick = () => togglePeakHourSelection(h);
+        picker.appendChild(checkbox);
+      }
+    }
+
+    function togglePeakHourSelection(hour) {
+      const idx = peakHoursSelected.indexOf(hour);
+      const element = document.getElementById(`peak-hour-checkbox-${hour}`);
+      
+      if (idx > -1) {
+        peakHoursSelected.splice(idx, 1);
+        element.className = "flex items-center justify-center p-2 border border-gray-800 rounded-lg text-center cursor-pointer text-[10px] font-mono hover:border-primary transition-all text-gray-400 select-none";
+      } else {
+        peakHoursSelected.push(hour);
+        element.className = "flex items-center justify-center p-2 border border-primary bg-primary/10 rounded-lg text-center cursor-pointer text-[10px] font-mono hover:border-primary transition-all text-primary font-bold select-none";
+      }
+    }
+
+    function openAddChargerModal() {
+      document.getElementById('modal-add-charger').classList.remove('hidden');
+    }
+
+    function closeAddChargerModal() {
+      document.getElementById('modal-add-charger').classList.add('hidden');
+    }
+
+    async function handleAddChargerSubmit(event) {
+      event.preventDefault();
+      
+      const payload = {
+        lat: Number(document.getElementById('add-charger-lat').value),
+        lng: Number(document.getElementById('add-charger-lng').value),
+        connector_type: document.getElementById('add-charger-connector').value,
+        price_per_kwh: Number(document.getElementById('add-charger-price').value),
+        peak_price_per_kwh: Number(document.getElementById('add-charger-peak-price').value || document.getElementById('add-charger-price').value),
+        off_peak_price_per_kwh: Number(document.getElementById('add-charger-off-peak-price').value || document.getElementById('add-charger-price').value),
+        peak_hours: peakHoursSelected,
+        is_available: document.getElementById('add-charger-available').checked
+      };
+
+      try {
+        const token = localStorage.getItem('emerald_token');
+        const res = await fetch('/api/v1/emerald/chargers', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+
+        notify('Charger listed successfully!', 'success');
+        closeAddChargerModal();
+        loadHostChargers();
+      } catch (e) {
+        notify('Failed to list charger: ' + e.message, 'error');
+      }
+    }
+
+    // ==================== STRIPE ONBOARDING SIMULATOR ====================
+    let walletUser = null;
+    async function loadHostWalletDetails() {
+      try {
+        const token = localStorage.getItem('emerald_token');
+        const res = await fetch('/api/v1/emerald/payments/account-status', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        
+        const btn = document.getElementById('btn-stripe-onboard');
+        const label = document.getElementById('stripe-status-label');
+
+        if (res.status === 400) {
+          // Unlinked
+          btn.innerHTML = `<span class="material-symbols-outlined text-sm font-extrabold text-indigo-600">account_balance</span> Link stripe Account`;
+          btn.className = "bg-white hover:bg-gray-100 text-gray-900 font-bold py-3 px-6 rounded-xl text-xs shadow-xl transition-all flex items-center gap-2";
+          label.innerText = "Unlinked: Onboarding Required";
+          label.className = "text-xs text-center text-yellow-500 font-semibold mt-2";
+          return;
+        }
+
+        if (!res.ok) throw new Error(data.error);
+
+        if (data.stripe_onboarding_complete) {
+          btn.innerHTML = `<span class="material-symbols-outlined text-sm font-extrabold text-white">verified_user</span> Stripe Configured`;
+          btn.className = "bg-emerald-600 text-white font-bold py-3 px-6 rounded-xl text-xs shadow-xl cursor-default flex items-center gap-2";
+          btn.onclick = null; // Remove handler
+          label.innerText = "Connected & Active: Deposits Enabled";
+          label.className = "text-xs text-center text-emerald-400 font-semibold mt-2";
+
+          // Pull revenue count into wallet stats (mock deposit display)
+          if (hostMetrics) {
+            document.getElementById('wallet-balance-payout').innerText = `$${(hostMetrics.summary.lifetime_revenue * 0.9).toFixed(2)}`;
+            document.getElementById('wallet-balance-pending').innerText = `$${(hostMetrics.summary.lifetime_revenue * 0.1).toFixed(2)}`;
+          }
+        }
+      } catch (e) {
+        console.error('Wallet details fetch error:', e);
+      }
+    }
+
+    async function startStripeOnboarding() {
+      try {
+        const token = localStorage.getItem('emerald_token');
+        notify('Requesting merchant onboarding URL...', 'info');
+
+        const res = await fetch('/api/v1/emerald/payments/connect-account', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+
+        // Simulating stripe express portal redirects: Show custom mock callback modal directly
+        notify('Redirecting to secure merchant setup...', 'info');
+        
+        setTimeout(() => {
+          document.getElementById('modal-stripe-onboarding-callback').classList.remove('hidden');
+        }, 1500);
+      } catch (e) {
+        notify('Stripe Connect error: ' + e.message, 'error');
+      }
+    }
+
+    async function closeStripeOnboardingModal() {
+      document.getElementById('modal-stripe-onboarding-callback').classList.add('hidden');
+      
+      // Hit account status endpoint to trigger database update to true
+      try {
+        const token = localStorage.getItem('emerald_token');
+        const res = await fetch('/api/v1/emerald/payments/account-status', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (res.ok && data.stripe_onboarding_complete) {
+          notify('Onboarding verified. Balance payouts synced.', 'success');
+        }
+      } catch (e) {
+        console.error('Stripe verify fail:', e);
+      }
+      
+      loadHostWalletDetails();
+    }
+
+    // ==================== REVENUE ANALYTICS CHARTS ====================
+    function renderAnalyticsCharts() {
+      if (!hostMetrics || !hostMetrics.monthly_breakdown) return;
+
+      const monthlyData = hostMetrics.monthly_breakdown;
+      const labels = monthlyData.map(d => d.month).reverse();
+      const revenues = monthlyData.map(d => d.total_revenue).reverse();
+      const kwhs = monthlyData.map(d => d.total_kwh_delivered).reverse();
+
+      // If chart instances exist, destroy them first to prevent rendering bugs
+      if (monthlyRevenueChart) monthlyRevenueChart.destroy();
+      if (monthlyKwhChart) monthlyKwhChart.destroy();
+
+      // Line Chart (Revenue)
+      const ctxRev = document.getElementById('chart-monthly-revenue').getContext('2d');
+      monthlyRevenueChart = new Chart(ctxRev, {
+        type: 'line',
+        data: {
+          labels: labels.length ? labels : ['2026-06'],
+          datasets: [{
+            label: 'Net Revenue ($)',
+            data: revenues.length ? revenues : [0],
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            fill: true,
+            tension: 0.4,
+            borderWidth: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { grid: { color: '#1f2937' }, ticks: { color: '#9ca3af' } },
+            x: { grid: { display: false }, ticks: { color: '#9ca3af' } }
+          }
+        }
+      });
+
+      // Bar Chart (Kwh Volumetrics)
+      const ctxKwh = document.getElementById('chart-monthly-kwh').getContext('2d');
+      monthlyKwhChart = new Chart(ctxKwh, {
+        type: 'bar',
+        data: {
+          labels: labels.length ? labels : ['2026-06'],
+          datasets: [{
+            label: 'Energy (kWh)',
+            data: kwhs.length ? kwhs : [0],
+            backgroundColor: '#34d399',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { grid: { color: '#1f2937' }, ticks: { color: '#9ca3af' } },
+            x: { grid: { display: false }, ticks: { color: '#9ca3af' } }
+          }
+        }
+      });
+    }
+
+  </script>
+</body>
+</html>

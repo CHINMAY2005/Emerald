@@ -1,0 +1,146 @@
+/* Emerald EV Charging Platform - Unified App Styles */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary: #10b981;
+  --primary-hover: #059669;
+  --bg-color: #0b0f19;
+  --card-bg: rgba(17, 24, 39, 0.75);
+  --border: rgba(16, 185, 129, 0.15);
+  --text: #f3f4f6;
+  --text-muted: #9ca3af;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text);
+}
+
+.font-heading {
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(16, 185, 129, 0.3);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 185, 129, 0.5);
+}
+
+/* Simulated Map shadow */
+.custom-map-shadow {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Glassmorphism containers */
+.glass-panel {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+}
+
+.glass-panel:hover {
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+/* Animated Battery Styles */
+.battery-container {
+  width: 80px;
+  height: 150px;
+  border: 4px solid var(--text);
+  border-radius: 12px;
+  position: relative;
+  padding: 4px;
+}
+
+.battery-container::before {
+  content: '';
+  position: absolute;
+  width: 40px;
+  height: 10px;
+  background: var(--text);
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.battery-fill {
+  width: 100%;
+  height: 0%;
+  background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
+  border-radius: 6px;
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  right: 4px;
+  width: calc(100% - 8px);
+  transition: height 0.5s ease;
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
+}
+
+/* Charging bolt animations */
+.charging-bolt {
+  animation: bolt-pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes bolt-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+    text-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.7;
+    text-shadow: 0 0 25px rgba(16, 185, 129, 1);
+  }
+}
+
+/* Active Nav Glow */
+.active-nav-item {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-left: 3px solid #10b981;
+  color: #10b981 !important;
+}
+
+/* View transitions */
+.view-panel {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.view-panel.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Pulse animation for charging pins */
+.pulse-pin {
+  animation: pulse-glow 2s infinite;
+}
+
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
