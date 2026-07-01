@@ -211,3 +211,71 @@ export const createPaymentIntent = async (req, res, next) => {
     return next(error);
   }
 };
+
+/**
+ * Get Stripe publishable key configuration
+ */
+export const getConfig = async (req, res, next) => {
+  return res.status(200).json({
+    success: true,
+    publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || null,
+  });
+};
+
+/**
+ * Verify payment status with Stripe directly
+ */
+export const verifyPayment = async (req, res, next) => {
+  const { booking_id } = req.body;
+  const callerId = req.user.id;
+
+  try {
+    // 1. Fetch booking
+    const bookingResult = await query(
+      `SELECT id, driver_id, status, stripe_payment_intent_id 
+       FROM bookings WHERE id = $1`,
+      [booking_id]
+    );
+
+    if (bookingResult.rowCount === 0) {
+      return res.status(404).json({ success: false, error: 'Booking not found.' });
+    }
+
+    const booking = bookingResult.rows[0];
+
+    // Ensure authorization
+    if (booking.driver_id !== callerId && req.user.role !== 'admin') {
+      return res.status(403).json({ success: false, error: 'Access denied.' });
+    }
+
+    // If already paid/completed, return success immediately
+    if (['paid', 'completed'].includes(booking.status)) {
+      return res.status(200).json({ success: true, status: booking.status });
+    }
+
+    if (!booking.stripe_payment_intent_id) {
+      return res.status(400).json({ success: false, error: 'No Stripe transaction associated with this booking.' });
+    }
+
+    // 2. Query Stripe for the PaymentIntent status
+    const paymentIntent = await stripe.paymentIntents.retrieve(booking.stripe_payment_intent_id);
+
+    if (paymentIntent.status === 'succeeded' || paymentIntent.status === 'requires_capture') {
+      // Update database status to 'paid'
+      await query(
+        "UPDATE bookings SET status = 'paid' WHERE id = $1",
+        [booking_id]
+      );
+      return res.status(200).json({ success: true, status: 'paid' });
+    } else {
+      return res.status(200).json({ 
+        success: false, 
+        status: booking.status,
+        stripe_status: paymentIntent.status, 
+        error: 'Stripe transaction has not succeeded yet.' 
+      });
+    }
+  } catch (error) {
+    return next(error);
+  }
+};

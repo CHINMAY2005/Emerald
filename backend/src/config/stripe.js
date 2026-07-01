@@ -61,6 +61,13 @@ if (isPlaceholder) {
           id,
           status: 'succeeded',
         };
+      },
+      retrieve: async (id) => {
+        console.log('[MOCK STRIPE] Retrieve Payment Intent:', id);
+        return {
+          id,
+          status: 'succeeded',
+        };
       }
     },
     webhooks: {

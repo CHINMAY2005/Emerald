@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Emerald Network | P2P EV Charging Marketplace</title>
+  <title>Welcome to Emerald Network | P2P EV Charging Marketplace</title>
   
   <!-- Tailwind CSS & Flowbite / Tailwind forms -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -36,6 +36,9 @@
   <!-- Custom Styles -->
   <link rel="stylesheet" href="/css/app-styles.css" />
   
+  <!-- Stripe.js SDK -->
+  <script src="https://js.stripe.com/v3/"></script>
+  
   <!-- Google Material Symbols -->
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 </head>
@@ -45,52 +48,253 @@
   <div id="toast-container" class="fixed top-6 right-6 z-[9999] flex flex-col gap-3 pointer-events-none"></div>
 
   <!-- ==================== VIEW 1: LANDING & AUTH VIEW ==================== -->
-  <div id="view-landing" class="view-panel active min-h-screen flex flex-col items-center justify-center relative px-4">
+  <div id="view-landing" class="view-panel active min-h-screen flex flex-col relative">
     <!-- Glow Background Effects -->
-    <div class="absolute w-[500px] h-[500px] rounded-full bg-primary/5 blur-[120px] top-[-100px] left-[-100px] pointer-events-none"></div>
-    <div class="absolute w-[600px] h-[600px] rounded-full bg-primary/5 blur-[120px] bottom-[-150px] right-[-150px] pointer-events-none"></div>
+    <div class="absolute w-[600px] h-[600px] rounded-full bg-primary/10 blur-[150px] top-[-200px] left-[-200px] pointer-events-none"></div>
+    <div class="absolute w-[800px] h-[800px] rounded-full bg-indigo-500/5 blur-[180px] bottom-[-200px] right-[-200px] pointer-events-none"></div>
 
-    <div class="max-w-4xl w-full text-center z-10">
-      <!-- Logo -->
-      <div class="flex items-center justify-center gap-3 mb-6">
-        <div class="bg-primary p-2.5 rounded-xl shadow-[0_0_25px_rgba(16,185,129,0.3)] flex items-center justify-center">
-          <span class="material-symbols-outlined text-white text-3xl font-bold" style="font-variation-settings: 'FILL' 1;">eco</span>
+    <!-- Header Navigation -->
+    <header class="w-full max-w-7xl mx-auto px-6 py-5 flex justify-between items-center z-25">
+      <div class="flex items-center gap-3">
+        <div class="bg-primary p-2 rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center justify-center">
+          <span class="material-symbols-outlined text-white text-2xl font-bold" style="font-variation-settings: 'FILL' 1;">eco</span>
         </div>
-        <span class="font-heading text-4xl font-extrabold bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">Emerald</span>
+        <span class="font-heading text-2xl font-extrabold bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent tracking-tight">Emerald</span>
+      </div>
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
+        <a href="#features" class="hover:text-primary transition-all" onclick="smoothScroll(event, 'features')">Platform Benefits</a>
+        <a href="#simulator" class="hover:text-primary transition-all" onclick="smoothScroll(event, 'simulator')">Host Earnings Calculator</a>
+      </nav>
+      <button class="bg-primary hover:bg-primary-hover text-white font-bold py-2 px-6 rounded-xl text-xs shadow-[0_4px_15px_rgba(16,185,129,0.2)] transition-all transform active:scale-95 animate-fade-in" onclick="openAuthModal('login')">
+        Sign In
+      </button>
+    </header>
+
+    <!-- Hero Section -->
+    <main class="flex-1 w-full max-w-7xl mx-auto px-6 py-12 md:py-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center z-10">
+      
+      <!-- Hero Left -->
+      <div class="space-y-8 text-left">
+        <div class="inline-flex items-center gap-2 bg-primary/10 border border-primary/25 text-primary px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider">
+          <span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+          Decentralized Grid Online
+        </div>
+        <h1 class="font-heading text-5xl sm:text-6xl font-extrabold tracking-tight text-white leading-[1.1]">
+          The P2P EV <span class="bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">Charging Grid</span> for Everyone.
+        </h1>
+        <p class="text-gray-400 text-base sm:text-lg max-w-xl leading-relaxed">
+          Unlock passive income by sharing your home EV charger, or find reliable, high-speed charging in seconds on a secure, escrow-backed decentralized network.
+        </p>
+        <div class="flex flex-wrap gap-4 pt-2">
+          <button class="bg-gradient-to-r from-primary to-primary-hover hover:brightness-110 text-white font-bold py-3.5 px-8 rounded-xl shadow-[0_4px_20px_rgba(16,185,129,0.3)] transition-all transform active:scale-[0.98]" onclick="openAuthModal('register')">
+            Register on Grid
+          </button>
+          <button class="bg-gray-800 hover:bg-gray-700 text-white border border-gray-700 font-bold py-3.5 px-8 rounded-xl transition-all" onclick="smoothScroll(null, 'simulator')">
+            Calculate Earnings
+          </button>
+        </div>
+
+        <!-- Mini Stats Grid -->
+        <div class="grid grid-cols-3 gap-6 pt-6 border-t border-gray-800 max-w-md">
+          <div>
+            <div class="text-2xl font-bold text-white font-heading">3,400+</div>
+            <div class="text-xs text-gray-500">Nodes Active</div>
+          </div>
+          <div>
+            <div class="text-2xl font-bold text-white font-heading">$240K+</div>
+            <div class="text-xs text-gray-500">Host Earnings</div>
+          </div>
+          <div>
+            <div class="text-2xl font-bold text-white font-heading">100%</div>
+            <div class="text-xs text-gray-500">Escrow Secured</div>
+          </div>
+        </div>
       </div>
 
-      <div class="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider mb-8">
-        <span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
-        Platform Online
+      <!-- Hero Right: Interactive Dashboard Visual Mockup -->
+      <div class="relative flex justify-center items-center">
+        <div class="absolute w-72 h-72 rounded-full bg-primary/20 blur-[80px] pointer-events-none"></div>
+        <div class="glass-panel w-full max-w-md rounded-3xl p-6 shadow-2xl border border-primary/20 bg-gray-900/60 backdrop-blur-xl relative z-10 overflow-hidden transform hover:-translate-y-1 transition-all">
+          <div class="flex justify-between items-center mb-6">
+            <span class="text-xs font-semibold text-primary uppercase tracking-wider">Live Node Status</span>
+            <span class="px-2 py-0.5 rounded bg-primary/20 text-primary text-[10px] font-bold">ONLINE</span>
+          </div>
+          <!-- Mock visual element -->
+          <div class="space-y-4">
+            <div class="flex justify-between items-center bg-gray-950/60 p-4 rounded-2xl border border-gray-800">
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-primary text-2xl">bolt</span>
+                <div class="text-left">
+                  <div class="text-xs font-semibold text-white">CCS Combo 1 (Supercharger)</div>
+                  <div class="text-[10px] text-gray-500">34.05, -118.25</div>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs font-bold text-white">$0.35/kWh</div>
+                <div class="text-[9px] text-gray-500">Standard Rate</div>
+              </div>
+            </div>
+
+            <!-- Telemetry Simulator Preview -->
+            <div class="bg-gray-950/60 p-4 rounded-2xl border border-gray-800 space-y-3">
+              <div class="flex justify-between text-xs">
+                <span class="text-gray-400">Delivered Energy</span>
+                <span class="text-white font-bold font-mono">42.8 kWh</span>
+              </div>
+              <div class="w-full bg-gray-800 h-1.5 rounded-full overflow-hidden">
+                <div class="bg-primary h-full w-[85%] animate-pulse"></div>
+              </div>
+              <div class="flex justify-between text-[10px] text-gray-500">
+                <span>Power: 150 kW</span>
+                <span>SOC: 85%</span>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 text-[10px] text-gray-500 italic">
+              <span class="material-symbols-outlined text-xs text-primary">security</span>
+              Transaction secured in smart-contract style escrow.
+            </div>
+          </div>
+        </div>
       </div>
+    </main>
 
-      <h1 class="font-heading text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-6">
-        Welcome to Emerald Network
-      </h1>
-      <p class="text-gray-400 text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-        The next-generation, peer-to-peer EV charging marketplace. Connecting drivers with private charging hosts in real-time. Share clean energy, earn revenue, and charge smarter on a secure, decentralized grid.
-      </p>
+    <!-- Host Earnings Simulator Section -->
+    <section id="simulator" class="w-full border-t border-gray-900 bg-gray-950/30 py-16 px-6 z-10 scroll-mt-6">
+      <div class="max-w-4xl mx-auto space-y-12">
+        <div class="text-center space-y-3">
+          <h2 class="font-heading text-3xl font-extrabold text-white">What can you earn as an Emerald Host?</h2>
+          <p class="text-gray-400 text-sm max-w-xl mx-auto">Calculate your projected monthly revenue based on your EV charger's power rate and estimated weekly bookings.</p>
+        </div>
 
-      <!-- Auth Panels -->
-      <div class="max-w-md mx-auto bg-gray-900/60 border border-primary/20 rounded-2xl p-8 backdrop-blur-xl shadow-2xl">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          
+          <!-- Inputs -->
+          <div class="glass-panel p-6 rounded-2xl border border-gray-800 bg-gray-900/40 space-y-6">
+            <div>
+              <label class="block text-[10px] font-bold text-gray-300 uppercase tracking-wider mb-2">1. Select Charger Type</label>
+              <select id="calc-charger" onchange="calculateProjectedEarnings()" class="w-full bg-gray-950 border border-gray-800 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-4 py-3 text-sm text-white transition-all">
+                <option value="7">7 kW Level 2 Wallbox ($0.30/kWh)</option>
+                <option value="22">22 kW Level 2 Wallbox ($0.35/kWh)</option>
+                <option value="50">50 kW DC Fast Charger ($0.45/kWh)</option>
+                <option value="150">150 kW DC Supercharger ($0.60/kWh)</option>
+              </select>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">
+                <span>2. Weekly Booking Hours</span>
+                <span id="calc-hours-val" class="text-primary font-bold">20 hours</span>
+              </div>
+              <input type="range" id="calc-hours" min="1" max="80" value="20" oninput="updateCalculatorHours(this.value)" class="w-full accent-primary bg-gray-800 h-2 rounded-lg appearance-none cursor-pointer">
+              <div class="flex justify-between text-[10px] text-gray-500 mt-1">
+                <span>1 hr/wk</span>
+                <span>80 hrs/wk</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Outputs -->
+          <div class="glass-panel p-8 rounded-2xl border border-primary/20 bg-gradient-to-br from-gray-900/60 to-primary/5 text-center relative overflow-hidden shadow-2xl">
+            <div class="absolute w-40 h-40 rounded-full bg-primary/10 blur-[60px] top-[-30px] right-[-30px] pointer-events-none"></div>
+            <span class="text-xs text-gray-400 font-semibold uppercase tracking-wider block mb-2">Projected Monthly Revenue</span>
+            <h3 class="text-5xl font-black text-white font-heading tracking-tight mb-2" id="calc-earnings-monthly">$0.00</h3>
+            <span class="text-xs text-primary font-semibold uppercase tracking-wider block mb-6" id="calc-earnings-val-annual">Projected Annual: $0.00</span>
+            
+            <div class="h-px bg-gray-800 my-4"></div>
+            <button class="w-full bg-primary hover:bg-primary-hover text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow-[0_4px_12px_rgba(16,185,129,0.2)]" onclick="openAuthModal('register')">
+              Start Listing Your Charger
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Value Proposition Cards -->
+    <section id="features" class="w-full border-t border-gray-900 py-16 px-6 z-10 scroll-mt-6">
+      <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         
+        <!-- Card 1 -->
+        <div class="glass-panel p-6 rounded-2xl border border-gray-800 bg-gray-900/20 space-y-4 hover:border-primary/25 transition-all">
+          <div class="bg-primary/10 w-12 h-12 rounded-xl flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary text-2xl">credit_card</span>
+          </div>
+          <h4 class="font-heading text-lg font-bold text-white">Stripe Escrow Checkout</h4>
+          <p class="text-xs text-gray-400 leading-relaxed">
+            Drivers authorize charges dynamically. Platform handles secure payouts automatically, protecting funds and processing transfers smoothly.
+          </p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="glass-panel p-6 rounded-2xl border border-gray-800 bg-gray-900/20 space-y-4 hover:border-primary/25 transition-all">
+          <div class="bg-primary/10 w-12 h-12 rounded-xl flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary text-2xl">sensors</span>
+          </div>
+          <h4 class="font-heading text-lg font-bold text-white">Real-Time Telemetry</h4>
+          <p class="text-xs text-gray-400 leading-relaxed">
+            Encrypted hardware telemetry reporting tracks battery SOC and grid load. Bills are pro-rated and settled in real-time if disconnected early.
+          </p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="glass-panel p-6 rounded-2xl border border-gray-800 bg-gray-900/20 space-y-4 hover:border-primary/25 transition-all">
+          <div class="bg-primary/10 w-12 h-12 rounded-xl flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary text-2xl">query_stats</span>
+          </div>
+          <h4 class="font-heading text-lg font-bold text-white">Dynamic Pricing Engine</h4>
+          <p class="text-xs text-gray-400 leading-relaxed">
+            Hosts configure peak congestion surcharge schedules. Drivers choose standard or off-peak slots to minimize electricity expenses.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="w-full py-8 border-t border-gray-900 text-center text-xs text-gray-500 z-10 bg-gray-950/20">
+      <p>&copy; 2026 Emerald Network. All rights reserved. Secure Peer-to-Peer EV Charging.</p>
+    </footer>
+
+    <!-- ==================== FLOATING AUTHENTICATION MODAL ==================== -->
+    <div id="auth-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+      <!-- Backdrop -->
+      <div class="absolute inset-0 bg-gray-950/70 backdrop-blur-sm" onclick="closeAuthModal()"></div>
+      
+      <!-- Modal Panel -->
+      <div class="glass-panel max-w-sm w-full mx-4 rounded-3xl p-6 shadow-2xl border border-primary/20 bg-gray-900/90 backdrop-blur-xl z-10 relative space-y-6">
+        
+        <!-- Close Button -->
+        <button class="absolute top-4 right-4 material-symbols-outlined text-gray-500 hover:text-white" onclick="closeAuthModal()">close</button>
+        
+        <!-- Title and Logo -->
+        <div class="text-center space-y-2">
+          <div class="flex justify-center items-center gap-2">
+            <div class="bg-primary p-1.5 rounded-lg flex items-center justify-center">
+              <span class="material-symbols-outlined text-white text-lg font-bold" style="font-variation-settings: 'FILL' 1;">eco</span>
+            </div>
+            <span class="font-heading text-xl font-bold text-white">Emerald Portal</span>
+          </div>
+          <p class="text-xs text-gray-400">Access the peer-to-peer EV charging grid</p>
+        </div>
+
         <!-- Tab selector -->
-        <div class="flex bg-gray-800/80 p-1 rounded-xl mb-6">
-          <button id="tab-login" class="flex-1 py-2 text-sm font-semibold rounded-lg bg-primary text-white shadow transition-all" onclick="switchAuthTab('login')">Log In</button>
-          <button id="tab-register" class="flex-1 py-2 text-sm font-semibold rounded-lg text-gray-400 hover:text-white transition-all" onclick="switchAuthTab('register')">Register</button>
+        <div class="flex bg-gray-800/80 p-1 rounded-xl">
+          <button id="tab-login" class="flex-1 py-2 text-xs font-semibold rounded-lg bg-primary text-white shadow transition-all" onclick="switchAuthTab('login')">Log In</button>
+          <button id="tab-register" class="flex-1 py-2 text-xs font-semibold rounded-lg text-gray-400 hover:text-white transition-all" onclick="switchAuthTab('register')">Register</button>
         </div>
 
         <!-- Login Form -->
         <form id="form-login" onsubmit="handleAuthSubmit(event, 'login')" class="space-y-4">
           <div>
-            <label class="block text-left text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Email Address</label>
-            <input type="email" id="login-email" required class="w-full bg-gray-800/50 border border-gray-700 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 transition-all" placeholder="name@email.com">
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Email Address</label>
+            <input type="email" id="login-email" required class="w-full bg-gray-950 border border-gray-800 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-600 transition-all" placeholder="name@email.com">
           </div>
           <div>
-            <label class="block text-left text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Password</label>
-            <input type="password" id="login-password" required class="w-full bg-gray-800/50 border border-gray-700 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 transition-all" placeholder="••••••••">
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Password</label>
+            <input type="password" id="login-password" required class="w-full bg-gray-950 border border-gray-800 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-600 transition-all" placeholder="••••••••">
           </div>
-          <button type="submit" class="w-full bg-gradient-to-r from-primary to-primary-hover hover:brightness-110 text-white font-bold py-3 rounded-xl shadow-[0_4px_15px_rgba(16,185,129,0.3)] transition-all transform active:scale-[0.98]">
+          <button type="submit" class="w-full bg-gradient-to-r from-primary to-primary-hover hover:brightness-110 text-white font-bold py-2.5 rounded-xl text-xs shadow-[0_4px_15px_rgba(16,185,129,0.3)] transition-all transform active:scale-[0.98]">
             Sign In to Platform
           </button>
         </form>
@@ -98,31 +302,32 @@
         <!-- Register Form -->
         <form id="form-register" onsubmit="handleAuthSubmit(event, 'register')" class="space-y-4 hidden">
           <div>
-            <label class="block text-left text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Full Name</label>
-            <input type="text" id="register-name" required class="w-full bg-gray-800/50 border border-gray-700 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 transition-all" placeholder="John Doe">
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Full Name</label>
+            <input type="text" id="register-name" required class="w-full bg-gray-950 border border-gray-800 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-600 transition-all" placeholder="John Doe">
           </div>
           <div>
-            <label class="block text-left text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Email Address</label>
-            <input type="email" id="register-email" required class="w-full bg-gray-800/50 border border-gray-700 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 transition-all" placeholder="name@email.com">
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Email Address</label>
+            <input type="email" id="register-email" required class="w-full bg-gray-950 border border-gray-800 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-600 transition-all" placeholder="name@email.com">
           </div>
           <div>
-            <label class="block text-left text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Password</label>
-            <input type="password" id="register-password" required class="w-full bg-gray-800/50 border border-gray-700 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 transition-all" placeholder="At least 8 characters">
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Password</label>
+            <input type="password" id="register-password" required class="w-full bg-gray-950 border border-gray-800 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-600 transition-all" placeholder="At least 8 characters">
           </div>
           <div>
-            <label class="block text-left text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Primary Role</label>
-            <select id="register-role" class="w-full bg-gray-800/50 border border-gray-700 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-4 py-3 text-sm text-white transition-all">
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Primary Role</label>
+            <select id="register-role" class="w-full bg-gray-950 border border-gray-800 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl px-4 py-2.5 text-xs text-white transition-all">
               <option value="driver">EV Driver (Find Chargers & Charge)</option>
               <option value="host">Charger Host (List Chargers & Earn)</option>
             </select>
           </div>
-          <button type="submit" class="w-full bg-gradient-to-r from-primary to-primary-hover hover:brightness-110 text-white font-bold py-3 rounded-xl shadow-[0_4px_15px_rgba(16,185,129,0.3)] transition-all transform active:scale-[0.98]">
+          <button type="submit" class="w-full bg-gradient-to-r from-primary to-primary-hover hover:brightness-110 text-white font-bold py-2.5 rounded-xl text-xs shadow-[0_4px_15px_rgba(16,185,129,0.3)] transition-all transform active:scale-[0.98]">
             Create Account
           </button>
         </form>
 
       </div>
     </div>
+
   </div>
 
   <!-- ==================== VIEW 2: GLOBAL PORTAL APPLICATION SHELL ==================== -->
@@ -324,28 +529,41 @@
                 </div>
               </div>
 
-              <!-- Mock Credit Card Form -->
+              <!-- Dynamic Card Form Panel -->
               <div class="space-y-4">
-                <div>
-                  <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Card Number</label>
-                  <input type="text" value="4242 •••• •••• 4242" disabled class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 text-xs text-gray-400 font-mono">
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                  <div>
-                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Expiry</label>
-                    <input type="text" value="12/28" disabled class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 text-xs text-gray-400 font-mono">
+                
+                <!-- Real Stripe Elements Card Input -->
+                <div id="real-stripe-form" class="hidden">
+                  <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Credit or Debit Card</label>
+                  <div id="card-element" class="bg-gray-950 border border-gray-800 rounded-xl p-3">
+                    <!-- Stripe Card Element will mount here -->
                   </div>
+                  <!-- Used to display form validation errors -->
+                  <div id="card-errors" role="alert" class="text-red-500 text-[10px] mt-2 font-semibold"></div>
+                </div>
+
+                <!-- Mock Credit Card Form -->
+                <div id="mock-stripe-form" class="space-y-4">
                   <div>
-                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">CVV</label>
-                    <input type="text" value="***" disabled class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 text-xs text-gray-400 font-mono">
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Card Number</label>
+                    <input type="text" value="4242 •••• •••• 4242" disabled class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 text-xs text-gray-400 font-mono">
+                  </div>
+                  <div class="grid grid-cols-2 gap-2">
+                    <div>
+                      <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Expiry</label>
+                      <input type="text" value="12/28" disabled class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 text-xs text-gray-400 font-mono">
+                    </div>
+                    <div>
+                      <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">CVV</label>
+                      <input type="text" value="***" disabled class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 text-xs text-gray-400 font-mono">
+                    </div>
+                  </div>
+                  <div class="text-[10px] text-gray-500 italic">
+                    💳 This checkout is simulated locally via mock Stripe Connect split payments.
                   </div>
                 </div>
 
-                <div class="text-[10px] text-gray-500 italic">
-                  💳 This checkout is simulated locally via mock Stripe Connect split payments.
-                </div>
-
-                <button id="btn-pay-booking" class="w-full bg-primary hover:bg-primary-hover text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow-[0_4px_12px_rgba(16,185,129,0.2)]" onclick="executeMockPayment()">
+                <button id="btn-pay-booking" class="w-full bg-primary hover:bg-primary-hover text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow-[0_4px_12px_rgba(16,185,129,0.2)]" onclick="submitPayment()">
                   Authorize Charge via Stripe
                 </button>
               </div>
@@ -719,6 +937,7 @@
   <script>
     // ==================== APP STATE AND GLOBAL DATA ====================
     let map = null;
+    let mapInitializing = false;
     let mapMarkers = [];
     let chargersList = [];
     let currentAuthTab = 'login';
@@ -731,6 +950,11 @@
     let telemetryInterval = null;
     let monthlyRevenueChart = null;
     let monthlyKwhChart = null;
+
+    // Real Stripe Connect Elements state
+    let stripeInstanceFront = null;
+    let stripeCardElement = null;
+    let stripePublishableKey = null;
 
     // Default center point for Map (e.g. Los Angeles)
     const DEFAULT_MAP_CENTER = [34.0522, -118.2437];
@@ -775,8 +999,141 @@
     // Wrap showToast to override default connector logger alert
     window.showToast = notify;
 
+    // Smooth scrolling for landing sections
+    function smoothScroll(event, id) {
+      if (event) event.preventDefault();
+      const target = document.getElementById(id);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // Auth modal controls
+    function openAuthModal(tab = 'login') {
+      switchAuthTab(tab);
+      document.getElementById('auth-modal').classList.remove('hidden');
+    }
+
+    // Wrap tab switches inside login/register flow
+    const originalSwitchAuthTab = switchAuthTab;
+    window.switchAuthTab = (tab) => {
+      originalSwitchAuthTab(tab);
+      // Ensure tab styles are highlighted properly in modal header
+      if (tab === 'login') {
+        document.getElementById('tab-login').className = "flex-1 py-2 text-xs font-semibold rounded-lg bg-primary text-white shadow transition-all";
+        document.getElementById('tab-register').className = "flex-1 py-2 text-xs font-semibold rounded-lg text-gray-400 hover:text-white transition-all";
+      } else {
+        document.getElementById('tab-login').className = "flex-1 py-2 text-xs font-semibold rounded-lg text-gray-400 hover:text-white transition-all";
+        document.getElementById('tab-register').className = "flex-1 py-2 text-xs font-semibold rounded-lg bg-primary text-white shadow transition-all";
+      }
+    };
+
+    function closeAuthModal() {
+      document.getElementById('auth-modal').classList.add('hidden');
+    }
+
+    // Host earnings calculator calculations
+    function updateCalculatorHours(val) {
+      document.getElementById('calc-hours-val').innerText = `${val} hours`;
+      calculateProjectedEarnings();
+    }
+
+    function calculateProjectedEarnings() {
+      const chargerVal = Number(document.getElementById('calc-charger').value);
+      const hoursVal = Number(document.getElementById('calc-hours').value);
+
+      // standard price approximation depending on charger power
+      let price = 0.30;
+      if (chargerVal === 7) price = 0.30;
+      else if (chargerVal === 22) price = 0.35;
+      else if (chargerVal === 50) price = 0.45;
+      else if (chargerVal === 150) price = 0.60;
+
+      // Estimated Monthly Revenue: kW * hours/week * price/kWh * 4.33 weeks/month
+      const kW = chargerVal;
+      const weeklyRevenue = kW * hoursVal * price;
+      const monthlyRevenue = weeklyRevenue * 4.33;
+      const annualRevenue = monthlyRevenue * 12;
+
+      document.getElementById('calc-earnings-monthly').innerText = `$${monthlyRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      document.getElementById('calc-earnings-val-annual').innerText = `Projected Annual: $${annualRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+
+    async function fetchStripeConfig() {
+      const token = localStorage.getItem('emerald_token');
+      if (!token) return;
+      
+      try {
+        const res = await fetch('/api/v1/emerald/payments/config', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        
+        if (res.ok && data.publishableKey && !data.publishableKey.includes('placeholder')) {
+          stripePublishableKey = data.publishableKey;
+          initializeStripeElements();
+        } else {
+          // Use Mock Form
+          document.getElementById('real-stripe-form').classList.add('hidden');
+          document.getElementById('mock-stripe-form').classList.remove('hidden');
+        }
+      } catch (e) {
+        console.error('Error fetching Stripe config:', e);
+      }
+    }
+
+    function initializeStripeElements() {
+      if (!stripePublishableKey) return;
+      try {
+        stripeInstanceFront = Stripe(stripePublishableKey);
+        const elements = stripeInstanceFront.elements();
+        
+        // Custom style matching index.html dark card theme
+        const style = {
+          base: {
+            color: '#ffffff',
+            fontFamily: 'Inter, sans-serif',
+            fontSmoothing: 'antialiased',
+            fontSize: '14px',
+            '::placeholder': {
+              color: '#4b5563'
+            }
+          },
+          invalid: {
+            color: '#ef4444',
+            iconColor: '#ef4444'
+          }
+        };
+
+        stripeCardElement = elements.create('card', { style });
+        stripeCardElement.mount('#card-element');
+
+        stripeCardElement.on('change', (event) => {
+          const displayError = document.getElementById('card-errors');
+          if (displayError) {
+            if (event.error) {
+              displayError.textContent = event.error.message;
+            } else {
+              displayError.textContent = '';
+            }
+          }
+        });
+
+        // Toggle UI containers
+        document.getElementById('real-stripe-form').classList.remove('hidden');
+        document.getElementById('mock-stripe-form').classList.add('hidden');
+      } catch (err) {
+        console.error('Stripe Elements initialization failed:', err);
+        document.getElementById('real-stripe-form').classList.add('hidden');
+        document.getElementById('mock-stripe-form').classList.remove('hidden');
+      }
+    }
+
     // ==================== ROUTING & VIEW CONTROLLERS ====================
     window.addEventListener('DOMContentLoaded', () => {
+      // Initialize calculator
+      calculateProjectedEarnings();
+
       // 1. Initialise State from localStorage
       const token = localStorage.getItem('emerald_token');
       const userStr = localStorage.getItem('emerald_user');
@@ -790,6 +1147,7 @@
           currentRole = user.role;
           
           showPortalView();
+          fetchStripeConfig();
         } catch (e) {
           handleLogout();
         }
@@ -946,7 +1304,9 @@
         currentRole = data.user.role;
 
         notify(action === 'login' ? 'Signed in successfully!' : 'Registration complete! Welcome to Emerald.', 'success');
+        closeAuthModal();
         showPortalView();
+        fetchStripeConfig();
       } catch (error) {
         notify(error.message, 'error');
       }
@@ -961,13 +1321,16 @@
 
     // ==================== MAP INTEGRATION ====================
     function initializeMap() {
-      if (map) return; // Already initialized
+      if (map || mapInitializing) return; // Already initialized or initializing
+      mapInitializing = true;
 
       setTimeout(() => {
         // Init Leaflet Map centering default center
         map = L.map('leaflet-map-container', {
           zoomControl: false
         }).setView(DEFAULT_MAP_CENTER, 12);
+
+        mapInitializing = false;
 
         // Standard dark tiles layout (Premium styled)
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
@@ -1210,8 +1573,103 @@
       document.getElementById('payment-checkout-drawer').classList.add('hidden');
     }
 
+    async function submitPayment() {
+      const payButton = document.getElementById('btn-pay-booking');
+      payButton.disabled = true;
+      
+      try {
+        if (stripePublishableKey && stripeInstanceFront && stripeCardElement) {
+          await executeRealPayment();
+        } else {
+          await executeMockPayment();
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        payButton.disabled = false;
+      }
+    }
+
+    async function executeRealPayment() {
+      if (!selectedBookingForCheckout) return;
+
+      const payButton = document.getElementById('btn-pay-booking');
+      payButton.innerText = 'Processing Real Payment...';
+
+      try {
+        const token = localStorage.getItem('emerald_token');
+        notify('Initiating secure payment intent...', 'info');
+
+        // 1. Create PaymentIntent on server
+        const intentRes = await fetch('/api/v1/emerald/payments/create-intent', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ booking_id: selectedBookingForCheckout.id })
+        });
+
+        const intentData = await intentRes.json();
+        if (!intentRes.ok) throw new Error(intentData.error);
+
+        const clientSecret = intentData.client_secret;
+
+        notify('Confirming credit card with Stripe...', 'info');
+
+        // 2. Confirm card payment client-side using Stripe elements
+        const userStr = localStorage.getItem('emerald_user');
+        const currentUser = userStr ? JSON.parse(userStr) : { name: 'EV Driver' };
+
+        const { paymentIntent, error } = await stripeInstanceFront.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: stripeCardElement,
+            billing_details: {
+              name: currentUser.name
+            }
+          }
+        });
+
+        if (error) {
+          throw new Error(error.message);
+        }
+
+        notify('Card authorized successfully! Verifying transaction...', 'info');
+
+        // 3. Post verification payload to the backend server
+        const verifyRes = await fetch('/api/v1/emerald/payments/verify', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ booking_id: selectedBookingForCheckout.id })
+        });
+
+        const verifyData = await verifyRes.json();
+        if (!verifyRes.ok) throw new Error(verifyData.error);
+
+        notify('Transaction cleared! Reservation fully authorized.', 'success');
+
+        // Refresh UI
+        document.getElementById('payment-checkout-drawer').classList.add('hidden');
+        loadUserBookings();
+        switchPortalTab('driver-activity');
+      } catch (e) {
+        notify('Stripe Checkout Failed: ' + e.message, 'error');
+        const displayError = document.getElementById('card-errors');
+        if (displayError) displayError.textContent = e.message;
+        throw e;
+      } finally {
+        payButton.innerText = 'Authorize Charge via Stripe';
+      }
+    }
+
     async function executeMockPayment() {
       if (!selectedBookingForCheckout) return;
+
+      const payButton = document.getElementById('btn-pay-booking');
+      payButton.innerText = 'Processing Mock Payment...';
 
       try {
         const token = localStorage.getItem('emerald_token');
@@ -1258,9 +1716,13 @@
         document.getElementById('payment-checkout-drawer').classList.add('hidden');
 
         // Refresh and switch to charging activity view
+        loadUserBookings();
         switchPortalTab('driver-activity');
       } catch (e) {
         notify('Stripe checkout error: ' + e.message, 'error');
+        throw e;
+      } finally {
+        payButton.innerText = 'Authorize Charge via Stripe';
       }
     }
 
